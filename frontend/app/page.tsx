@@ -218,25 +218,21 @@ export default function Home() {
                 title="Market"
                 value={selected?.scores.market ?? 0}
                 details={selected?.score_details.market ?? []}
-                evidence={selected?.source_evidence ?? []}
               />
               <MetricDetails
                 title="Infrastructure"
                 value={selected?.scores.infrastructure ?? 0}
                 details={selected?.score_details.infrastructure ?? []}
-                evidence={selected?.source_evidence ?? []}
               />
               <MetricDetails
                 title="Policy"
                 value={selected?.scores.policy ?? 0}
                 details={selected?.score_details.policy ?? []}
-                evidence={selected?.source_evidence ?? []}
               />
               <MetricDetails
                 title="Strategic"
                 value={selected?.scores.strategic ?? 0}
                 details={selected?.score_details.strategic ?? []}
-                evidence={selected?.source_evidence ?? []}
               />
             </div>
             <div className="rounded-2xl border border-[var(--line)] bg-white p-4">
