@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import MapView from "./components/MapView";
 import ScoreBreakdown from "./components/ScoreBreakdown";
 import MetricDetails from "./components/MetricDetails";
+import ActionDetails from "./components/ActionDetails";
 import { areas, type AreaRecord } from "./data/areas";
 import { computeReadiness, scoreBand, scoreSoftColor } from "./lib/scoring";
 
@@ -188,18 +189,10 @@ export default function Home() {
                 {selected?.main_constraint}
               </p>
             </div>
-            <div className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-5 shadow-sm">
-              <h3 className="text-sm font-semibold text-[var(--muted)]">
-                Recommended Actions
-              </h3>
-              <ul className="mt-2 space-y-2 text-sm text-[var(--foreground)]">
-                {selected?.recommended_actions.map((action) => (
-                  <li key={action} className="rounded-lg bg-[#f7f7f3] px-3 py-2">
-                    {action}
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <ActionDetails
+              actions={selected?.recommended_actions ?? []}
+              details={selected?.action_details ?? []}
+            />
           </div>
         </section>
 

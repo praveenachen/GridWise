@@ -19,6 +19,7 @@ export type AreaRecord = {
   main_constraint: string;
   why_bullets: string[];
   recommended_actions: string[];
+  action_details: string[];
   evidence_notes: string[];
 };
 
@@ -72,6 +73,11 @@ export const areas: AreaRecord[] = [
       "Advance servicing design and funding for 2026-2028",
       "Prioritize zoning alignment for mid-rise as-of-right",
       "Coordinate with transit timing to reduce delivery risk",
+    ],
+    action_details: [
+      "Confirm funding source, scope, and delivery window for servicing upgrades.",
+      "Draft zoning update package with targeted mid-rise permissions and standards.",
+      "Align capital timing with transit reliability improvements to reduce risk.",
     ],
     evidence_notes: [
       "Designated intensification corridor in planning docs",
@@ -128,6 +134,11 @@ export const areas: AreaRecord[] = [
       "Offer pre-application support for mixed-use proposals",
       "Coordinate with major employer anchors",
     ],
+    action_details: [
+      "Identify priority parcels and explore land swaps or acquisitions.",
+      "Create a fast-track pre-application clinic for station-area proposals.",
+      "Engage employers on shared infrastructure and phasing commitments.",
+    ],
     evidence_notes: [
       "Station area identified as a growth node",
       "Existing trunk infrastructure capacity available",
@@ -182,6 +193,11 @@ export const areas: AreaRecord[] = [
       "Clarify servicing schedule and funding trigger",
       "Align development phasing with transit expansion",
       "Prepare a near-term district plan update",
+    ],
+    action_details: [
+      "Publish a clear servicing trigger tied to capital plan milestones.",
+      "Sequence development approvals to match transit delivery phases.",
+      "Update district plan guidance to reflect current market conditions.",
     ],
     evidence_notes: [
       "Interchange area highlighted as a priority node",
@@ -238,6 +254,11 @@ export const areas: AreaRecord[] = [
       "Target mid-rise zoning near key intersections",
       "Coordinate servicing upgrades with corridor phasing",
     ],
+    action_details: [
+      "Link node-level planning to transit timelines and service levels.",
+      "Prepare zoning changes for key intersections to unlock density.",
+      "Package servicing upgrades into phased capital delivery.",
+    ],
     evidence_notes: [
       "Corridor identified for gradual intensification",
       "Transit expansion noted for later phases",
@@ -292,6 +313,11 @@ export const areas: AreaRecord[] = [
       "Confirm servicing investment schedule",
       "Coordinate town centre plan with transit priorities",
       "Identify catalytic mixed-use sites",
+    ],
+    action_details: [
+      "Secure a published servicing schedule tied to budget approval.",
+      "Align planning approvals with transit program timelines.",
+      "Advance site readiness for early catalytic projects.",
     ],
     evidence_notes: [
       "Town centre designated for intensified growth",
@@ -348,6 +374,11 @@ export const areas: AreaRecord[] = [
       "Support coordinated applications across parcels",
       "Clarify density targets with community partners",
     ],
+    action_details: [
+      "Outline phasing, responsibilities, and infrastructure sequencing.",
+      "Set up a coordinated review process for adjacent proposals.",
+      "Use stakeholder workshops to align on density and form.",
+    ],
     evidence_notes: [
       "Station area identified as a growth node",
       "Transit service is already in place",
@@ -403,6 +434,11 @@ export const areas: AreaRecord[] = [
       "Align servicing strategy with town centre growth",
       "Prioritize mixed-use zoning permissions",
     ],
+    action_details: [
+      "Modernize the secondary plan to support higher density.",
+      "Align servicing upgrades with growth staging targets.",
+      "Prioritize zoning updates to unlock mixed-use projects.",
+    ],
     evidence_notes: [
       "Town centre identified for future intensification",
       "Policy updates pending",
@@ -457,6 +493,11 @@ export const areas: AreaRecord[] = [
       "Accelerate mainstreet public realm improvements",
       "Coordinate active transportation upgrades",
       "Expand as-of-right mid-rise permissions",
+    ],
+    action_details: [
+      "Package streetscape improvements to support higher density.",
+      "Prioritize active transportation upgrades for safety and access.",
+      "Expand permissions to reduce rezoning timelines.",
     ],
     evidence_notes: [
       "Mainstreet identified for growth and intensification",
