@@ -217,22 +217,18 @@ export default function Home() {
               </p>
               <MetricDetails
                 title="Market"
-                value={selected?.scores.market ?? 0}
                 details={selected?.score_details.market ?? []}
               />
               <MetricDetails
                 title="Infrastructure"
-                value={selected?.scores.infrastructure ?? 0}
                 details={selected?.score_details.infrastructure ?? []}
               />
               <MetricDetails
                 title="Policy"
-                value={selected?.scores.policy ?? 0}
                 details={selected?.score_details.policy ?? []}
               />
               <MetricDetails
                 title="Strategic"
-                value={selected?.scores.strategic ?? 0}
                 details={selected?.score_details.strategic ?? []}
               />
             </div>

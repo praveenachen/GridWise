@@ -1,19 +1,17 @@
 type MetricDetailsProps = {
   title: string;
-  value: number;
   details: string[];
 };
 
 export default function MetricDetails({
   title,
-  value,
   details,
 }: MetricDetailsProps) {
   return (
     <details className="rounded-xl border border-[var(--line)] bg-white px-3 py-2">
       <summary className="flex cursor-pointer items-center justify-between text-sm font-semibold">
         <span>{title}</span>
-        <span className="text-[var(--muted)]">{value}</span>
+        <span className="text-[var(--muted)]">▾</span>
       </summary>
       <ul className="mt-3 space-y-2 text-sm text-[var(--muted)]">
         {details.map((detail) => (
