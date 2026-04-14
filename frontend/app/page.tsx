@@ -551,14 +551,14 @@ export default function Home() {
       </main>
 
       {activeLens === "developer" && developerModalOpen ? (
-        <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/30 px-4">
+        <div className="fixed inset-0 z-[2000] flex items-center justify-center bg-black/30 px-4">
           <button
             type="button"
             className="absolute inset-0 h-full w-full"
             aria-label="Close developer inputs modal"
             onClick={() => setDeveloperModalOpen(false)}
           />
-          <div className="relative z-10 w-full max-w-2xl rounded-3xl border border-[var(--line)] bg-[var(--surface)] p-6 shadow-2xl">
+          <div className="relative z-[2001] w-full max-w-2xl rounded-3xl border border-[var(--line)] bg-[var(--surface)] p-6 shadow-2xl">
             <div className="flex items-start justify-between gap-3">
               <div>
                 <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
