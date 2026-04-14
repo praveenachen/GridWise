@@ -2,7 +2,7 @@
 
 import { MapContainer, TileLayer, CircleMarker, Tooltip } from "react-leaflet";
 import type { AreaRecord } from "../data/areas";
-import { computeReadiness } from "../lib/scoring";
+import { computeReadiness, scoreColor } from "../lib/scoring";
 
 type MapViewProps = {
   areas: AreaRecord[];
@@ -25,14 +25,15 @@ export default function MapView({ areas, selectedId, onSelect }: MapViewProps) {
       {areas.map((area) => {
         const score = computeReadiness(area);
         const isSelected = area.id === selectedId;
+        const baseColor = scoreColor(score);
         return (
           <CircleMarker
             key={area.id}
             center={area.center}
             radius={isSelected ? 14 : 10}
             pathOptions={{
-              color: isSelected ? "#0f6b5b" : "#1d3f3f",
-              fillColor: isSelected ? "#0f6b5b" : "#7fb7a8",
+              color: isSelected ? "#0f6b5b" : baseColor,
+              fillColor: isSelected ? "#0f6b5b" : baseColor,
               fillOpacity: isSelected ? 0.9 : 0.65,
               weight: isSelected ? 2 : 1,
             }}

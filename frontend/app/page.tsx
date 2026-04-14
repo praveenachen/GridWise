@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import MapView from "./components/MapView";
 import ScoreBreakdown from "./components/ScoreBreakdown";
 import { areas, type AreaRecord } from "./data/areas";
-import { computeReadiness, scoreBand } from "./lib/scoring";
+import { computeReadiness, scoreBand, scoreSoftColor } from "./lib/scoring";
 
 export default function Home() {
   const [query, setQuery] = useState("");
@@ -163,6 +163,20 @@ export default function Home() {
                 onSelect={setSelectedId}
               />
             </div>
+            <div className="mt-4 flex flex-wrap gap-3 text-xs text-[var(--muted)]">
+              <span className="flex items-center gap-2">
+                <span className="h-3 w-3 rounded-full bg-[#0f6b5b]" />
+                High readiness
+              </span>
+              <span className="flex items-center gap-2">
+                <span className="h-3 w-3 rounded-full bg-[#2f7f73]" />
+                Moderate readiness
+              </span>
+              <span className="flex items-center gap-2">
+                <span className="h-3 w-3 rounded-full bg-[#b15a19]" />
+                Low readiness
+              </span>
+            </div>
           </div>
           <div className="grid gap-4 md:grid-cols-2">
             <div className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-5 shadow-sm">
@@ -211,7 +225,8 @@ export default function Home() {
                 {selected?.why_bullets.map((bullet) => (
                   <li
                     key={bullet}
-                    className="rounded-lg bg-[var(--accent-soft)] px-3 py-2"
+                    className="rounded-lg px-3 py-2"
+                    style={{ background: scoreSoftColor(computeReadiness(selected)) }}
                   >
                     {bullet}
                   </li>

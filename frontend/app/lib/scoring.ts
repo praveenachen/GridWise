@@ -22,3 +22,15 @@ export function scoreBand(score: number) {
   if (score >= 50) return "Moderate";
   return "Low";
 }
+
+export function scoreColor(score: number) {
+  if (score >= 75) return "#0f6b5b";
+  if (score >= 50) return "#2f7f73";
+  return "#b15a19";
+}
+
+export function scoreSoftColor(score: number) {
+  if (score >= 75) return "#dff0ec";
+  if (score >= 50) return "#e8f2ef";
+  return "#f8eadf";
+}
