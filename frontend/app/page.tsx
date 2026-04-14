@@ -219,18 +219,22 @@ export default function Home() {
               <MetricDetails
                 title="Market"
                 details={selected?.score_details.market ?? []}
+                evidence={selected?.source_evidence ?? []}
               />
               <MetricDetails
                 title="Infrastructure"
                 details={selected?.score_details.infrastructure ?? []}
+                evidence={selected?.source_evidence ?? []}
               />
               <MetricDetails
                 title="Policy"
                 details={selected?.score_details.policy ?? []}
+                evidence={selected?.source_evidence ?? []}
               />
               <MetricDetails
                 title="Strategic"
                 details={selected?.score_details.strategic ?? []}
+                evidence={selected?.source_evidence ?? []}
               />
             </div>
             <div className="rounded-2xl border border-[var(--line)] bg-white p-4">
