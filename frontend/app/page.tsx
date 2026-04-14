@@ -5,6 +5,7 @@ import MapView from "./components/MapView";
 import MetricDetails from "./components/MetricDetails";
 import ActionDetails from "./components/ActionDetails";
 import SourceEvidence from "./components/SourceEvidence";
+import InsightsAssistant from "./components/InsightsAssistant";
 import { areas, type AreaRecord } from "./data/areas";
 import { computeReadiness, scoreBand, scoreSoftColor } from "./lib/scoring";
 
@@ -252,6 +253,7 @@ export default function Home() {
               </ul>
             </div>
             <SourceEvidence evidence={selected?.source_evidence ?? []} />
+            <InsightsAssistant area={selected as AreaRecord} />
           </div>
         </section>
       </main>
