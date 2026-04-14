@@ -1,0 +1,44 @@
+@import "leaflet/dist/leaflet.css";
+@import "tailwindcss";
+
+:root {
+  --background: #f4f1ea;
+  --foreground: #1c2a2b;
+  --surface: #ffffff;
+  --muted: #6b7b7d;
+  --accent: #0f6b5b;
+  --accent-soft: #e4f2ef;
+  --warning: #b15a19;
+  --warning-soft: #f8eadf;
+  --line: #d9e1e0;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-body);
+  --font-display: var(--font-display);
+}
+
+body {
+  background: radial-gradient(
+      1200px 600px at 20% -10%,
+      #fff8e9 0%,
+      #f4f1ea 60%
+    )
+    no-repeat fixed;
+  color: var(--foreground);
+  font-family: var(--font-body), system-ui, sans-serif;
+}
+
+h1,
+h2,
+h3,
+.font-display {
+  font-family: var(--font-display), system-ui, sans-serif;
+}
+
+.leaflet-container {
+  font-family: var(--font-body), system-ui, sans-serif;
+  background: #e9f0ef;
+}
