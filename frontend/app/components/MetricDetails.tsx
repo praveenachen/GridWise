@@ -17,7 +17,20 @@ export default function MetricDetails({
             {title}
             <span className="text-xs text-[var(--muted)]">{value}</span>
           </span>
-          <span className="text-lg text-[var(--muted)]">v</span>
+          <svg
+            className="h-4 w-4 text-[var(--muted)]"
+            viewBox="0 0 20 20"
+            fill="none"
+            aria-hidden="true"
+          >
+            <path
+              d="M5 7l5 5 5-5"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
         </div>
         <div className="h-2 w-full rounded-full bg-slate-200">
           <div

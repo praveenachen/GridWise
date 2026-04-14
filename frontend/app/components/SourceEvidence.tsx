@@ -7,7 +7,20 @@ export default function SourceEvidence({ evidence }: SourceEvidenceProps) {
     <details className="rounded-2xl border border-[var(--line)] bg-white p-4">
       <summary className="flex cursor-pointer items-center justify-between text-sm font-semibold text-[var(--muted)]">
         <span>Source Evidence</span>
-        <span className="text-lg">▾</span>
+        <svg
+          className="h-4 w-4"
+          viewBox="0 0 20 20"
+          fill="none"
+          aria-hidden="true"
+        >
+          <path
+            d="M5 7l5 5 5-5"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
       </summary>
       <div className="mt-3 space-y-3 text-sm text-[var(--muted)]">
         {evidence.map((item) => (
