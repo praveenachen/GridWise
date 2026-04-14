@@ -1,13 +1,23 @@
 import type { AreaRecord } from "../data/areas";
 
-const weights = {
+export type WeightProfile = {
+  market: number;
+  infrastructure: number;
+  policy: number;
+  strategic: number;
+};
+
+export const defaultWeights: WeightProfile = {
   infrastructure: 0.3,
   policy: 0.25,
   market: 0.25,
   strategic: 0.2,
 };
 
-export function computeReadiness(area: AreaRecord) {
+export function computeReadiness(
+  area: AreaRecord,
+  weights: WeightProfile = defaultWeights,
+) {
   const { market, infrastructure, policy, strategic } = area.scores;
   const score =
     market * weights.market +

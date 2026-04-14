@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import type { AreaRecord } from "../data/areas";
-import { computeReadiness, scoreBand } from "../lib/scoring";
+import { scoreBand } from "../lib/scoring";
 
 type Lens = "city" | "developer";
 type Role = "assistant" | "user";
@@ -14,68 +14,60 @@ type Message = {
 
 type AssistantSidebarProps = {
   area: AreaRecord;
+  lens: Lens;
+  score: number;
+  summary: string;
+  prompts: string[];
+  contextLines: string[];
 };
 
-const promptsByLens: Record<Lens, string[]> = {
-  city: [
-    "How does this area align with Official Plan priorities?",
-    "What is the top sequencing risk for this area?",
-    "Which action would unblock the most near-term housing?",
-  ],
-  developer: [
-    "What is the biggest delivery risk for this area?",
-    "What would most improve feasibility in the next 12-24 months?",
-    "Where is the strongest market signal in this area?",
-  ],
-};
-
-function buildSummary(area: AreaRecord, lens: Lens) {
-  const readiness = computeReadiness(area);
-  const band = scoreBand(readiness).toLowerCase();
-  if (lens === "city") {
-    return `${area.name} is ${band} readiness with a score of ${readiness}. City-facing priorities emphasize policy alignment and strategic sequencing.`;
-  }
-  return `${area.name} is ${band} readiness with a score of ${readiness}. Developer-facing priorities emphasize feasibility and delivery risk.`;
-}
-
-function replyForPrompt(area: AreaRecord, lens: Lens, prompt: string) {
+function replyForPrompt(
+  area: AreaRecord,
+  lens: Lens,
+  prompt: string,
+  contextLines: string[],
+) {
   const topAction = area.recommended_actions[0] ?? "Target a near-term action.";
   const evidenceSource =
     area.source_evidence[0]?.source ?? "Official Plan / Master Plan documentation";
   const evidenceExcerpt = area.source_evidence[0]?.excerpt ?? "";
+  const lensContext = contextLines.length ? ` ${contextLines[0]}` : "";
 
   if (prompt.includes("Official Plan")) {
-    return `This area is anchored in OP direction. ${evidenceSource} notes: ${evidenceExcerpt}`;
+    return `This area is anchored in OP direction. ${evidenceSource} notes: ${evidenceExcerpt}.${lensContext}`;
   }
   if (prompt.includes("sequencing")) {
-    return `Sequencing risk is driven by ${area.main_constraint.toLowerCase()}. A practical next step is ${topAction}.`;
+    return `Sequencing risk is driven by ${area.main_constraint.toLowerCase()}. A practical next step is ${topAction}.${lensContext}`;
   }
   if (prompt.includes("unblock")) {
-    return `The fastest unlock is likely ${topAction}. It addresses the primary constraint directly.`;
+    return `The fastest unlock is likely ${topAction}. It addresses the primary constraint directly.${lensContext}`;
   }
   if (prompt.includes("delivery risk")) {
-    return `The main delivery risk is ${area.main_constraint.toLowerCase()}. Resolving it would improve feasibility.`;
+    return `The main delivery risk is ${area.main_constraint.toLowerCase()}. Resolving it would improve feasibility.${lensContext}`;
   }
   if (prompt.includes("feasibility")) {
-    return `Feasibility improves most by addressing ${area.main_constraint.toLowerCase()}. Start with ${topAction}.`;
+    return `Feasibility improves most by addressing ${area.main_constraint.toLowerCase()}. Start with ${topAction}.${lensContext}`;
   }
   if (prompt.includes("market")) {
-    return `The strongest market signal here is the ${area.scores.market} market score, supported by the area notes and development activity.`;
+    return `The strongest market signal here is the ${area.scores.market} market score, supported by area evidence and development activity.${lensContext}`;
   }
   return lens === "city"
-    ? "This area is positioned as a policy- and strategy-aligned growth opportunity."
-    : "This area shows viable market demand with near-term delivery dependencies.";
+    ? `This area is positioned as a policy- and strategy-aligned growth opportunity.${lensContext}`
+    : `This area shows viable market demand with near-term delivery dependencies.${lensContext}`;
 }
 
-export default function AssistantSidebar({ area }: AssistantSidebarProps) {
+export default function AssistantSidebar({
+  area,
+  lens,
+  score,
+  summary,
+  prompts,
+  contextLines,
+}: AssistantSidebarProps) {
   const [open, setOpen] = useState(false);
-  const [lens, setLens] = useState<Lens>("city");
   const [messages, setMessages] = useState<Message[]>([]);
   const [draft, setDraft] = useState("");
   const [activePrompt, setActivePrompt] = useState<string | null>(null);
-
-  const summary = useMemo(() => buildSummary(area, lens), [area, lens]);
-  const prompts = promptsByLens[lens];
 
   useEffect(() => {
     if (!open) return;
@@ -94,7 +86,7 @@ export default function AssistantSidebar({ area }: AssistantSidebarProps) {
     setMessages((current) => [
       ...current,
       { role: "user", text: prompt },
-      { role: "assistant", text: replyForPrompt(area, lens, prompt) },
+      { role: "assistant", text: replyForPrompt(area, lens, prompt, contextLines) },
     ]);
   };
 
@@ -106,7 +98,7 @@ export default function AssistantSidebar({ area }: AssistantSidebarProps) {
       { role: "user", text: trimmed },
       {
         role: "assistant",
-        text: replyForPrompt(area, lens, trimmed),
+        text: replyForPrompt(area, lens, trimmed, contextLines),
       },
     ]);
     setDraft("");
@@ -163,7 +155,7 @@ export default function AssistantSidebar({ area }: AssistantSidebarProps) {
                     {area.name}
                   </h2>
                   <p className="text-sm text-[var(--muted)]">
-                    {computeReadiness(area)} readiness score
+                    {score} readiness score
                   </p>
                 </div>
                 <button
@@ -175,28 +167,19 @@ export default function AssistantSidebar({ area }: AssistantSidebarProps) {
                 </button>
               </div>
               <div className="mt-4 flex rounded-full border border-[var(--line)] bg-white p-1 text-xs">
-                <button
-                  type="button"
-                  onClick={() => setLens("city")}
-                  className={`flex-1 rounded-full px-3 py-2 font-semibold transition ${
-                    lens === "city"
-                      ? "bg-[var(--accent-soft)] text-[var(--accent)]"
-                      : "text-[var(--muted)]"
-                  }`}
-                >
-                  City view
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setLens("developer")}
-                  className={`flex-1 rounded-full px-3 py-2 font-semibold transition ${
-                    lens === "developer"
-                      ? "bg-[var(--accent-soft)] text-[var(--accent)]"
-                      : "text-[var(--muted)]"
-                  }`}
-                >
-                  Developer view
-                </button>
+                <div className="flex-1 rounded-full px-3 py-2 text-center font-semibold bg-[var(--accent-soft)] text-[var(--accent)]">
+                  {lens === "city" ? "City view" : "Developer view"}
+                </div>
+              </div>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {contextLines.map((line) => (
+                  <span
+                    key={line}
+                    className="rounded-full bg-white px-3 py-1 text-[11px] text-[var(--muted)] border border-[var(--line)]"
+                  >
+                    {line}
+                  </span>
+                ))}
               </div>
             </header>
 
@@ -234,7 +217,7 @@ export default function AssistantSidebar({ area }: AssistantSidebarProps) {
                         className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm shadow-sm ${
                           message.role === "user"
                             ? "bg-[var(--accent)] text-white"
-                            : "bg-white text-[var(--foreground)] border border-[var(--line)]"
+                            : "border border-[var(--line)] bg-white text-[var(--foreground)]"
                         }`}
                       >
                         {message.text}
@@ -272,8 +255,7 @@ export default function AssistantSidebar({ area }: AssistantSidebarProps) {
                   </button>
                 </div>
                 <p className="mt-2 text-xs text-[var(--muted)]">
-                  This assistant uses structured dashboard evidence and recommended
-                  actions.
+                  This assistant uses structured dashboard evidence and lens context.
                 </p>
               </div>
             </footer>

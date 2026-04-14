@@ -1,18 +1,165 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import MapView from "./components/MapView";
 import MetricDetails from "./components/MetricDetails";
 import ActionDetails from "./components/ActionDetails";
 import SourceEvidence from "./components/SourceEvidence";
 import AssistantSidebar from "./components/AssistantSidebar";
 import { areas, type AreaRecord } from "./data/areas";
-import { computeReadiness, scoreBand, scoreSoftColor } from "./lib/scoring";
+import {
+  computeReadiness,
+  defaultWeights,
+  scoreBand,
+  scoreSoftColor,
+  type WeightProfile,
+} from "./lib/scoring";
+
+type LensMode = "city" | "developer";
+type PriorityKey = keyof WeightProfile;
+
+type DeveloperInputs = {
+  projectType: "residential" | "mixed-use" | "employment";
+  timeline: "0-2 years" | "2-4 years" | "4+ years";
+  servicingSensitivity: "low" | "medium" | "high";
+  zoningCertainty: "low" | "medium" | "high";
+};
+
+const lensPrompts: Record<LensMode, string[]> = {
+  city: [
+    "How does this area align with Official Plan priorities?",
+    "What is the top sequencing risk for this area?",
+    "Which action would unblock the most near-term housing?",
+  ],
+  developer: [
+    "What is the biggest delivery risk for this area?",
+    "What would most improve feasibility in the next 12-24 months?",
+    "Where is the strongest market signal in this area?",
+  ],
+};
+
+const cityPriorityLabels: Array<{
+  key: PriorityKey;
+  label: string;
+  hint: string;
+}> = [
+  {
+    key: "policy",
+    label: "Intensification / OP alignment",
+    hint: "Raises the influence of policy certainty and growth-area designation.",
+  },
+  {
+    key: "strategic",
+    label: "Strategic sequencing",
+    hint: "Increases the impact of citywide sequencing and timing priorities.",
+  },
+  {
+    key: "infrastructure",
+    label: "Servicing readiness",
+    hint: "Emphasizes water, wastewater, and transit readiness.",
+  },
+  {
+    key: "market",
+    label: "Market momentum",
+    hint: "Keeps redevelopment pressure and demand signals in view.",
+  },
+];
+
+function normalizeWeights(weights: WeightProfile): WeightProfile {
+  const total =
+    weights.market +
+    weights.infrastructure +
+    weights.policy +
+    weights.strategic || 1;
+  return {
+    market: weights.market / total,
+    infrastructure: weights.infrastructure / total,
+    policy: weights.policy / total,
+    strategic: weights.strategic / total,
+  };
+}
+
+function deriveDeveloperWeights(inputs: DeveloperInputs): WeightProfile {
+  const weights: WeightProfile = { ...defaultWeights };
+  weights.market = 34;
+  weights.infrastructure = 34;
+  weights.policy = 18;
+  weights.strategic = 14;
+
+  if (inputs.projectType === "residential") {
+    weights.market += 3;
+    weights.policy += 2;
+  } else if (inputs.projectType === "mixed-use") {
+    weights.policy += 3;
+    weights.strategic += 2;
+  } else {
+    weights.strategic += 4;
+    weights.infrastructure += 2;
+  }
+
+  if (inputs.timeline === "0-2 years") {
+    weights.infrastructure += 5;
+    weights.policy += 2;
+    weights.market -= 2;
+    weights.strategic -= 1;
+  } else if (inputs.timeline === "4+ years") {
+    weights.market += 3;
+    weights.strategic += 2;
+    weights.infrastructure -= 3;
+  } else {
+    weights.market += 1;
+    weights.strategic += 1;
+  }
+
+  if (inputs.servicingSensitivity === "high") {
+    weights.infrastructure += 6;
+    weights.market -= 2;
+  } else if (inputs.servicingSensitivity === "low") {
+    weights.infrastructure -= 2;
+    weights.market += 2;
+  }
+
+  if (inputs.zoningCertainty === "high") {
+    weights.policy += 5;
+    weights.strategic += 1;
+  } else if (inputs.zoningCertainty === "low") {
+    weights.policy += 2;
+    weights.strategic -= 1;
+  }
+
+  return normalizeWeights(weights);
+}
+
+function formatWeightPercent(value: number) {
+  return `${Math.round(value * 100)}%`;
+}
 
 export default function Home() {
   const [query, setQuery] = useState("");
   const [filterHigh, setFilterHigh] = useState(false);
   const [selectedId, setSelectedId] = useState(areas[0]?.id ?? "");
+  const [activeLens, setActiveLens] = useState<LensMode>("city");
+  const [cityWeights, setCityWeights] = useState<WeightProfile>({
+    market: 18,
+    infrastructure: 22,
+    policy: 32,
+    strategic: 28,
+  });
+  const [developerInputs, setDeveloperInputs] = useState<DeveloperInputs>({
+    projectType: "mixed-use",
+    timeline: "2-4 years",
+    servicingSensitivity: "high",
+    zoningCertainty: "high",
+  });
+  const [developerModalOpen, setDeveloperModalOpen] = useState(false);
+
+  const activeWeights = useMemo(
+    () =>
+      activeLens === "city"
+        ? normalizeWeights(cityWeights)
+        : deriveDeveloperWeights(developerInputs),
+    [activeLens, cityWeights, developerInputs],
+  );
 
   const filteredAreas = useMemo(() => {
     return areas.filter((area) => {
@@ -21,16 +168,19 @@ export default function Home() {
         area.type.toLowerCase().includes(query.toLowerCase());
       if (!matches) return false;
       if (!filterHigh) return true;
-      return computeReadiness(area) >= 75;
+      return computeReadiness(area, activeWeights) >= 75;
     });
-  }, [query, filterHigh]);
+  }, [query, filterHigh, activeWeights]);
 
+  const visibleAreas = filteredAreas.length ? filteredAreas : areas;
   const selected =
-    filteredAreas.find((area) => area.id === selectedId) ?? areas[0];
-  const readinessScores = filteredAreas.map((area) => ({
+    visibleAreas.find((area) => area.id === selectedId) ?? visibleAreas[0];
+  const selectedScore = computeReadiness(selected, activeWeights);
+
+  const readinessScores = visibleAreas.map((area) => ({
     id: area.id,
     name: area.name,
-    score: computeReadiness(area),
+    score: computeReadiness(area, activeWeights),
   }));
   const averageScore = readinessScores.length
     ? Math.round(
@@ -44,6 +194,40 @@ export default function Home() {
   const lowest = readinessScores.reduce((prev, current) =>
     current.score < prev.score ? current : prev,
   );
+
+  useEffect(() => {
+    if (activeLens !== "developer") {
+      setDeveloperModalOpen(false);
+    }
+  }, [activeLens]);
+
+  const assistantSummary =
+    activeLens === "city"
+      ? `City lens: policy and strategic priorities are weighted higher. ${formatWeightPercent(
+          activeWeights.policy,
+        )} of the score emphasizes policy alignment and ${formatWeightPercent(
+          activeWeights.strategic,
+        )} emphasizes strategic sequencing.`
+      : `Developer lens: feasibility and delivery risk are weighted higher. ${formatWeightPercent(
+          activeWeights.market,
+        )} of the score emphasizes market demand and ${formatWeightPercent(
+          activeWeights.infrastructure,
+        )} emphasizes servicing readiness.`;
+
+  const assistantContextLines =
+    activeLens === "city"
+      ? [
+          `Policy ${formatWeightPercent(activeWeights.policy)}`,
+          `Strategic ${formatWeightPercent(activeWeights.strategic)}`,
+          `Infrastructure ${formatWeightPercent(activeWeights.infrastructure)}`,
+          `Market ${formatWeightPercent(activeWeights.market)}`,
+        ]
+      : [
+          `Project ${developerInputs.projectType}`,
+          `Timeline ${developerInputs.timeline}`,
+          `Servicing ${developerInputs.servicingSensitivity}`,
+          `Zoning ${developerInputs.zoningCertainty}`,
+        ];
 
   return (
     <div className="min-h-screen px-6 py-8 lg:px-10">
@@ -67,7 +251,7 @@ export default function Home() {
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-semibold">Areas</h2>
             <span className="text-xs text-[var(--muted)]">
-              {filteredAreas.length} total
+              {visibleAreas.length} total
             </span>
           </div>
           <div className="mt-4 space-y-3">
@@ -90,8 +274,8 @@ export default function Home() {
             </button>
           </div>
           <div className="mt-5 space-y-2">
-            {filteredAreas.map((area) => {
-              const score = computeReadiness(area);
+            {visibleAreas.map((area) => {
+              const score = computeReadiness(area, activeWeights);
               const isSelected = area.id === selected?.id;
               return (
                 <button
@@ -133,37 +317,148 @@ export default function Home() {
                 Highest Readiness
               </p>
               <p className="mt-2 text-lg font-semibold">{highest.name}</p>
-              <p className="text-sm text-[var(--muted)]">
-                Score {highest.score}
-              </p>
+              <p className="text-sm text-[var(--muted)]">Score {highest.score}</p>
             </div>
             <div className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-4 shadow-sm">
               <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
                 Lowest Readiness
               </p>
               <p className="mt-2 text-lg font-semibold">{lowest.name}</p>
-              <p className="text-sm text-[var(--muted)]">
-                Score {lowest.score}
-              </p>
+              <p className="text-sm text-[var(--muted)]">Score {lowest.score}</p>
             </div>
           </div>
+
           <div className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-5 shadow-sm">
-            <div className="flex items-center justify-between">
+            <div className="flex items-start justify-between gap-4">
               <div>
+                <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
+                  Lens
+                </p>
                 <h2 className="text-lg font-semibold">Growth Readiness Map</h2>
                 <p className="text-sm text-[var(--muted)]">
-                  Click an area to inspect readiness and constraints.
+                  Switch between a City planning lens and a Developer feasibility
+                  lens.
                 </p>
               </div>
-              <span className="rounded-full bg-[var(--accent-soft)] px-3 py-1 text-xs font-semibold text-[var(--accent)]">
-                Interactive
-              </span>
+              <div className="flex rounded-full border border-[var(--line)] bg-white p-1 text-xs shadow-sm">
+                <button
+                  type="button"
+                  onClick={() => setActiveLens("city")}
+                  className={`rounded-full px-4 py-2 font-semibold transition ${
+                    activeLens === "city"
+                      ? "bg-[var(--accent-soft)] text-[var(--accent)]"
+                      : "text-[var(--muted)]"
+                  }`}
+                >
+                  City
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveLens("developer")}
+                  className={`rounded-full px-4 py-2 font-semibold transition ${
+                    activeLens === "developer"
+                      ? "bg-[var(--accent-soft)] text-[var(--accent)]"
+                      : "text-[var(--muted)]"
+                  }`}
+                >
+                  Developer
+                </button>
+              </div>
             </div>
+
+            {activeLens === "city" ? (
+              <div className="mt-4 rounded-2xl border border-[var(--line)] bg-white p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <h3 className="text-sm font-semibold">City Priorities</h3>
+                    <p className="text-sm text-[var(--muted)]">
+                      Adjust how strongly each Official Plan-led priority affects
+                      the ranking.
+                    </p>
+                  </div>
+                  <span className="rounded-full bg-[var(--accent-soft)] px-3 py-1 text-xs font-semibold text-[var(--accent)]">
+                    OP-focused
+                  </span>
+                </div>
+                <div className="mt-4 space-y-4">
+                  {cityPriorityLabels.map((item) => (
+                    <div key={item.key} className="space-y-2">
+                      <div className="flex items-center justify-between gap-3">
+                        <div>
+                          <p className="text-sm font-semibold">{item.label}</p>
+                          <p className="text-xs text-[var(--muted)]">{item.hint}</p>
+                        </div>
+                        <span className="text-sm font-semibold text-[var(--accent)]">
+                          {cityWeights[item.key]}
+                        </span>
+                      </div>
+                      <input
+                        type="range"
+                        min="0"
+                        max="50"
+                        value={cityWeights[item.key]}
+                        onChange={(event) =>
+                          setCityWeights((current) => ({
+                            ...current,
+                            [item.key]: Number(event.target.value),
+                          }))
+                        }
+                        style={{ accentColor: "var(--accent)" }}
+                        className="w-full"
+                      />
+                    </div>
+                  ))}
+                </div>
+                <p className="mt-3 text-xs text-[var(--muted)]">
+                  Higher values tilt the score toward the City&apos;s priority lens,
+                  while preserving the same underlying area data.
+                </p>
+              </div>
+            ) : (
+              <div className="mt-4 rounded-2xl border border-[var(--line)] bg-white p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <h3 className="text-sm font-semibold">Developer Project Inputs</h3>
+                    <p className="text-sm text-[var(--muted)]">
+                      Enter project context to shift the score toward feasibility
+                      and delivery risk.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setDeveloperModalOpen(true)}
+                    className="rounded-full border border-[var(--line)] px-3 py-1 text-xs font-semibold text-[var(--accent)] hover:border-[var(--accent)]"
+                  >
+                    Open form
+                  </button>
+                </div>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  <span className="rounded-full bg-[#f7f7f3] px-3 py-1 text-xs text-[var(--muted)]">
+                    {developerInputs.projectType}
+                  </span>
+                  <span className="rounded-full bg-[#f7f7f3] px-3 py-1 text-xs text-[var(--muted)]">
+                    {developerInputs.timeline}
+                  </span>
+                  <span className="rounded-full bg-[#f7f7f3] px-3 py-1 text-xs text-[var(--muted)]">
+                    {developerInputs.servicingSensitivity} servicing sensitivity
+                  </span>
+                  <span className="rounded-full bg-[#f7f7f3] px-3 py-1 text-xs text-[var(--muted)]">
+                    {developerInputs.zoningCertainty} zoning certainty
+                  </span>
+                </div>
+                <p className="mt-3 text-xs text-[var(--muted)]">
+                  These inputs change the weight profile used for Developer view,
+                  but the area evidence remains the same.
+                </p>
+              </div>
+            )}
+
             <div className="mt-4">
               <MapView
-                areas={filteredAreas.length ? filteredAreas : areas}
+                areas={visibleAreas}
                 selectedId={selected?.id ?? ""}
                 onSelect={setSelectedId}
+                weights={activeWeights}
               />
             </div>
             <div className="mt-4 flex flex-wrap gap-3 text-xs text-[var(--muted)]">
@@ -181,14 +476,13 @@ export default function Home() {
               </span>
             </div>
           </div>
+
           <div className="grid gap-4 md:grid-cols-2">
             <div className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-5 shadow-sm">
               <h3 className="text-sm font-semibold text-[var(--muted)]">
                 Main Constraint
               </h3>
-              <p className="mt-2 text-lg font-semibold">
-                {selected?.main_constraint}
-              </p>
+              <p className="mt-2 text-lg font-semibold">{selected?.main_constraint}</p>
             </div>
             <ActionDetails
               actions={selected?.recommended_actions ?? []}
@@ -202,12 +496,11 @@ export default function Home() {
             <div>
               <h2 className="text-lg font-semibold">Readiness Summary</h2>
               <p className="text-sm text-[var(--muted)]">
-                {selected?.name} · {scoreBand(computeReadiness(selected))}{" "}
-                readiness
+                {selected?.name} - {scoreBand(selectedScore)} readiness
               </p>
             </div>
             <div className="rounded-2xl bg-[var(--accent-soft)] px-4 py-2 text-2xl font-semibold text-[var(--accent)]">
-              {computeReadiness(selected)}
+              {selectedScore}
             </div>
           </div>
           <div className="mt-5 space-y-4">
@@ -245,7 +538,7 @@ export default function Home() {
                   <li
                     key={bullet}
                     className="rounded-lg px-3 py-2"
-                    style={{ background: scoreSoftColor(computeReadiness(selected)) }}
+                    style={{ background: scoreSoftColor(selectedScore) }}
                   >
                     {bullet}
                   </li>
@@ -256,7 +549,157 @@ export default function Home() {
           </div>
         </section>
       </main>
-      <AssistantSidebar area={selected as AreaRecord} />
+
+      {activeLens === "developer" && developerModalOpen ? (
+        <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/30 px-4">
+          <button
+            type="button"
+            className="absolute inset-0 h-full w-full"
+            aria-label="Close developer inputs modal"
+            onClick={() => setDeveloperModalOpen(false)}
+          />
+          <div className="relative z-10 w-full max-w-2xl rounded-3xl border border-[var(--line)] bg-[var(--surface)] p-6 shadow-2xl">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
+                  Developer Inputs
+                </p>
+                <h3 className="mt-1 text-2xl font-semibold text-[var(--foreground)]">
+                  Project profile
+                </h3>
+                <p className="text-sm text-[var(--muted)]">
+                  These inputs change the feasibility weighting profile used for
+                  Developer view.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setDeveloperModalOpen(false)}
+                className="rounded-full border border-[var(--line)] px-3 py-1 text-xs font-semibold text-[var(--muted)] hover:border-[var(--accent)]"
+              >
+                Close
+              </button>
+            </div>
+
+            <div className="mt-6 grid gap-4 md:grid-cols-2">
+              <label className="space-y-2">
+                <span className="text-sm font-semibold text-[var(--foreground)]">
+                  Project type
+                </span>
+                <select
+                  value={developerInputs.projectType}
+                  onChange={(event) =>
+                    setDeveloperInputs((current) => ({
+                      ...current,
+                      projectType: event.target.value as DeveloperInputs["projectType"],
+                    }))
+                  }
+                  className="w-full rounded-xl border border-[var(--line)] bg-white px-3 py-2 text-sm focus:border-[var(--accent)] focus:outline-none"
+                >
+                  <option value="residential">Residential</option>
+                  <option value="mixed-use">Mixed-use</option>
+                  <option value="employment">Employment / commercial</option>
+                </select>
+              </label>
+
+              <label className="space-y-2">
+                <span className="text-sm font-semibold text-[var(--foreground)]">
+                  Target delivery timeline
+                </span>
+                <select
+                  value={developerInputs.timeline}
+                  onChange={(event) =>
+                    setDeveloperInputs((current) => ({
+                      ...current,
+                      timeline: event.target.value as DeveloperInputs["timeline"],
+                    }))
+                  }
+                  className="w-full rounded-xl border border-[var(--line)] bg-white px-3 py-2 text-sm focus:border-[var(--accent)] focus:outline-none"
+                >
+                  <option value="0-2 years">0-2 years</option>
+                  <option value="2-4 years">2-4 years</option>
+                  <option value="4+ years">4+ years</option>
+                </select>
+              </label>
+
+              <label className="space-y-2">
+                <span className="text-sm font-semibold text-[var(--foreground)]">
+                  Servicing sensitivity
+                </span>
+                <select
+                  value={developerInputs.servicingSensitivity}
+                  onChange={(event) =>
+                    setDeveloperInputs((current) => ({
+                      ...current,
+                      servicingSensitivity: event.target.value as DeveloperInputs["servicingSensitivity"],
+                    }))
+                  }
+                  className="w-full rounded-xl border border-[var(--line)] bg-white px-3 py-2 text-sm focus:border-[var(--accent)] focus:outline-none"
+                >
+                  <option value="low">Low</option>
+                  <option value="medium">Medium</option>
+                  <option value="high">High</option>
+                </select>
+              </label>
+
+              <label className="space-y-2">
+                <span className="text-sm font-semibold text-[var(--foreground)]">
+                  Zoning certainty needed
+                </span>
+                <select
+                  value={developerInputs.zoningCertainty}
+                  onChange={(event) =>
+                    setDeveloperInputs((current) => ({
+                      ...current,
+                      zoningCertainty: event.target.value as DeveloperInputs["zoningCertainty"],
+                    }))
+                  }
+                  className="w-full rounded-xl border border-[var(--line)] bg-white px-3 py-2 text-sm focus:border-[var(--accent)] focus:outline-none"
+                >
+                  <option value="low">Low</option>
+                  <option value="medium">Medium</option>
+                  <option value="high">High</option>
+                </select>
+              </label>
+            </div>
+
+            <div className="mt-6 rounded-2xl border border-[var(--line)] bg-[#f7f7f3] p-4 text-sm text-[var(--muted)]">
+              <p className="font-semibold text-[var(--foreground)]">Current profile</p>
+              <p className="mt-1">
+                {developerInputs.projectType} project, {developerInputs.timeline},{" "}
+                {developerInputs.servicingSensitivity} servicing sensitivity,{" "}
+                {developerInputs.zoningCertainty} zoning certainty.
+              </p>
+            </div>
+
+            <div className="mt-6 flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => setDeveloperModalOpen(false)}
+                className="rounded-full border border-[var(--line)] px-4 py-2 text-sm font-semibold text-[var(--muted)]"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => setDeveloperModalOpen(false)}
+                className="rounded-full bg-[var(--accent)] px-4 py-2 text-sm font-semibold text-white"
+              >
+                Apply inputs
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      <AssistantSidebar
+        area={selected as AreaRecord}
+        lens={activeLens}
+        score={selectedScore}
+        summary={assistantSummary}
+        prompts={lensPrompts[activeLens]}
+        contextLines={assistantContextLines}
+      />
     </div>
   );
 }

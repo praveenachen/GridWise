@@ -2,15 +2,21 @@
 
 import { MapContainer, TileLayer, Polygon, Tooltip } from "react-leaflet";
 import type { AreaRecord } from "../data/areas";
-import { computeReadiness, scoreColor } from "../lib/scoring";
+import { computeReadiness, scoreColor, type WeightProfile } from "../lib/scoring";
 
 type MapViewProps = {
   areas: AreaRecord[];
   selectedId: string;
   onSelect: (id: string) => void;
+  weights?: WeightProfile;
 };
 
-export default function MapView({ areas, selectedId, onSelect }: MapViewProps) {
+export default function MapView({
+  areas,
+  selectedId,
+  onSelect,
+  weights,
+}: MapViewProps) {
   return (
     <MapContainer
       center={[45.405, -75.69]}
@@ -23,7 +29,7 @@ export default function MapView({ areas, selectedId, onSelect }: MapViewProps) {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       {areas.map((area) => {
-        const score = computeReadiness(area);
+        const score = computeReadiness(area, weights);
         const isSelected = area.id === selectedId;
         const baseColor = scoreColor(score);
         return (
