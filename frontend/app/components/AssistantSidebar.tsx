@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import type { AreaRecord } from "../data/areas";
 import { scoreBand } from "../lib/scoring";
+import type { WeightProfile } from "../lib/scoring";
 
 type Lens = "city" | "developer";
 type Role = "assistant" | "user";
@@ -16,6 +17,7 @@ type AssistantSidebarProps = {
   area: AreaRecord;
   lens: Lens;
   score: number;
+  weights: WeightProfile;
   summary: string;
   prompts: string[];
   contextLines: string[];
@@ -60,6 +62,7 @@ export default function AssistantSidebar({
   area,
   lens,
   score,
+  weights,
   summary,
   prompts,
   contextLines,
@@ -68,6 +71,7 @@ export default function AssistantSidebar({
   const [messages, setMessages] = useState<Message[]>([]);
   const [draft, setDraft] = useState("");
   const [activePrompt, setActivePrompt] = useState<string | null>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
 
   useEffect(() => {
     if (!open) return;
@@ -79,28 +83,51 @@ export default function AssistantSidebar({
     ]);
     setActivePrompt(null);
     setDraft("");
+    setIsGenerating(false);
   }, [open, summary, area.id, lens]);
 
-  const sendPrompt = (prompt: string) => {
+  const askAssistant = async (prompt: string) => {
     setActivePrompt(prompt);
-    setMessages((current) => [
-      ...current,
-      { role: "user", text: prompt },
-      { role: "assistant", text: replyForPrompt(area, lens, prompt, contextLines) },
-    ]);
+    const nextMessages = [...messages, { role: "user", text: prompt }];
+    setMessages(nextMessages);
+    setIsGenerating(true);
+
+    try {
+      const response = await fetch("/api/assistant", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          area,
+          lens,
+          summary,
+          contextLines,
+          weights,
+          messages: nextMessages,
+          prompt,
+        }),
+      });
+
+      const data = (await response.json()) as { answer?: string };
+      const answer =
+        data.answer ?? replyForPrompt(area, lens, prompt, contextLines);
+
+      setMessages((current) => [...current, { role: "assistant", text: answer }]);
+    } catch {
+      setMessages((current) => [
+        ...current,
+        { role: "assistant", text: replyForPrompt(area, lens, prompt, contextLines) },
+      ]);
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   const sendDraft = () => {
     const trimmed = draft.trim();
     if (!trimmed) return;
-    setMessages((current) => [
-      ...current,
-      { role: "user", text: trimmed },
-      {
-        role: "assistant",
-        text: replyForPrompt(area, lens, trimmed, contextLines),
-      },
-    ]);
+    void askAssistant(trimmed);
     setDraft("");
   };
 
@@ -155,7 +182,7 @@ export default function AssistantSidebar({
                     {area.name}
                   </h2>
                   <p className="text-sm text-[var(--muted)]">
-                    {score} readiness score
+                    {score} readiness score - {scoreBand(score)}
                   </p>
                 </div>
                 <button
@@ -193,7 +220,7 @@ export default function AssistantSidebar({
                     <button
                       key={prompt}
                       type="button"
-                      onClick={() => sendPrompt(prompt)}
+                      onClick={() => void askAssistant(prompt)}
                       className={`rounded-full border px-3 py-1 text-xs font-semibold transition ${
                         activePrompt === prompt
                           ? "border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)]"
@@ -224,6 +251,13 @@ export default function AssistantSidebar({
                       </div>
                     </div>
                   ))}
+                  {isGenerating ? (
+                    <div className="flex justify-start">
+                      <div className="max-w-[85%] rounded-2xl border border-[var(--line)] bg-white px-4 py-3 text-sm text-[var(--muted)] shadow-sm">
+                        Thinking through the selected lens...
+                      </div>
+                    </div>
+                  ) : null}
                 </div>
               </div>
             </div>

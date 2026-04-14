@@ -25,6 +25,41 @@ type DeveloperInputs = {
   zoningCertainty: "low" | "medium" | "high";
 };
 
+type DashboardPreferences = {
+  activeLens: LensMode;
+  cityWeights: WeightProfile;
+  developerInputs: DeveloperInputs;
+  selectedId: string;
+  filterHigh: boolean;
+};
+
+const dashboardStorageKey = "ottawa-growth-dashboard-settings";
+
+const defaultCityWeights: WeightProfile = {
+  market: 18,
+  infrastructure: 22,
+  policy: 32,
+  strategic: 28,
+};
+
+const defaultDeveloperInputs: DeveloperInputs = {
+  projectType: "mixed-use",
+  timeline: "2-4 years",
+  servicingSensitivity: "high",
+  zoningCertainty: "high",
+};
+
+function loadDashboardPreferences(): DashboardPreferences | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem(dashboardStorageKey);
+    if (!raw) return null;
+    return JSON.parse(raw) as DashboardPreferences;
+  } catch {
+    return null;
+  }
+}
+
 const lensPrompts: Record<LensMode, string[]> = {
   city: [
     "How does this area align with Official Plan priorities?",
@@ -139,19 +174,13 @@ export default function Home() {
   const [filterHigh, setFilterHigh] = useState(false);
   const [selectedId, setSelectedId] = useState(areas[0]?.id ?? "");
   const [activeLens, setActiveLens] = useState<LensMode>("city");
-  const [cityWeights, setCityWeights] = useState<WeightProfile>({
-    market: 18,
-    infrastructure: 22,
-    policy: 32,
-    strategic: 28,
-  });
-  const [developerInputs, setDeveloperInputs] = useState<DeveloperInputs>({
-    projectType: "mixed-use",
-    timeline: "2-4 years",
-    servicingSensitivity: "high",
-    zoningCertainty: "high",
-  });
+  const [cityWeights, setCityWeights] =
+    useState<WeightProfile>(defaultCityWeights);
+  const [developerInputs, setDeveloperInputs] = useState<DeveloperInputs>(
+    defaultDeveloperInputs,
+  );
   const [developerModalOpen, setDeveloperModalOpen] = useState(false);
+  const [preferencesLoaded, setPreferencesLoaded] = useState(false);
 
   const activeWeights = useMemo(
     () =>
@@ -200,6 +229,42 @@ export default function Home() {
       setDeveloperModalOpen(false);
     }
   }, [activeLens]);
+
+  useEffect(() => {
+    const preferences = loadDashboardPreferences();
+    if (!preferences) {
+      setPreferencesLoaded(true);
+      return;
+    }
+    setActiveLens(preferences.activeLens ?? "city");
+    setCityWeights(preferences.cityWeights ?? defaultCityWeights);
+    setDeveloperInputs(preferences.developerInputs ?? defaultDeveloperInputs);
+    setSelectedId(preferences.selectedId ?? areas[0]?.id ?? "");
+    setFilterHigh(Boolean(preferences.filterHigh));
+    setPreferencesLoaded(true);
+  }, []);
+
+  useEffect(() => {
+    if (!preferencesLoaded) return;
+    const preferences: DashboardPreferences = {
+      activeLens,
+      cityWeights,
+      developerInputs,
+      selectedId,
+      filterHigh,
+    };
+    window.localStorage.setItem(
+      dashboardStorageKey,
+      JSON.stringify(preferences),
+    );
+  }, [
+    activeLens,
+    cityWeights,
+    developerInputs,
+    selectedId,
+    filterHigh,
+    preferencesLoaded,
+  ]);
 
   const assistantSummary =
     activeLens === "city"
@@ -696,6 +761,7 @@ export default function Home() {
         area={selected as AreaRecord}
         lens={activeLens}
         score={selectedScore}
+        weights={activeWeights}
         summary={assistantSummary}
         prompts={lensPrompts[activeLens]}
         contextLines={assistantContextLines}
