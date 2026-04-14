@@ -1,0 +1,13 @@
+{
+  "weights": {
+    "infrastructure": 0.3,
+    "policy": 0.25,
+    "market": 0.25,
+    "strategic": 0.2
+  },
+  "bands": [
+    { "label": "High", "min": 75 },
+    { "label": "Moderate", "min": 50 },
+    { "label": "Low", "min": 0 }
+  ]
+}

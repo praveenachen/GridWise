@@ -1,0 +1,28 @@
+[
+  {
+    "id": "corridor_bronson",
+    "name": "Bronson Corridor",
+    "type": "corridor",
+    "scores": {
+      "market": 78,
+      "infrastructure": 62,
+      "policy": 70,
+      "strategic": 66
+    },
+    "main_constraint": "Servicing capacity upgrades not yet funded",
+    "why_bullets": [
+      "Strong development interest along the transit corridor",
+      "Official Plan supports mid-rise intensification",
+      "Near-term water servicing upgrades are unfunded"
+    ],
+    "recommended_actions": [
+      "Advance servicing design and funding for 2026-2028",
+      "Prioritize zoning alignment for mid-rise as-of-right",
+      "Coordinate with transit timing to reduce delivery risk"
+    ],
+    "evidence_notes": [
+      "Designated intensification corridor in planning docs",
+      "Capital plan identifies future water main upgrades"
+    ]
+  }
+]
