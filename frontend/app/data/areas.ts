@@ -3,6 +3,7 @@ export type AreaRecord = {
   name: string;
   type: "corridor" | "station_area" | "district";
   center: [number, number];
+  polygon: [number, number][];
   scores: {
     market: number;
     infrastructure: number;
@@ -21,6 +22,12 @@ export const areas: AreaRecord[] = [
     name: "Bronson Corridor",
     type: "corridor",
     center: [45.4035, -75.6972],
+    polygon: [
+      [45.4085, -75.709],
+      [45.4095, -75.687],
+      [45.399, -75.683],
+      [45.3955, -75.704],
+    ],
     scores: {
       market: 78,
       infrastructure: 62,
@@ -48,6 +55,12 @@ export const areas: AreaRecord[] = [
     name: "Hurdman Station Area",
     type: "station_area",
     center: [45.4142, -75.6635],
+    polygon: [
+      [45.4185, -75.675],
+      [45.4202, -75.655],
+      [45.4102, -75.651],
+      [45.4078, -75.669],
+    ],
     scores: {
       market: 64,
       infrastructure: 80,
@@ -75,6 +88,12 @@ export const areas: AreaRecord[] = [
     name: "Bayview District",
     type: "district",
     center: [45.4111, -75.7168],
+    polygon: [
+      [45.418, -75.732],
+      [45.422, -75.707],
+      [45.407, -75.701],
+      [45.403, -75.724],
+    ],
     scores: {
       market: 70,
       infrastructure: 58,
@@ -102,6 +121,12 @@ export const areas: AreaRecord[] = [
     name: "Baseline Corridor",
     type: "corridor",
     center: [45.364, -75.738],
+    polygon: [
+      [45.373, -75.754],
+      [45.374, -75.725],
+      [45.356, -75.721],
+      [45.355, -75.748],
+    ],
     scores: {
       market: 60,
       infrastructure: 55,
@@ -129,6 +154,12 @@ export const areas: AreaRecord[] = [
     name: "Orleans Town Centre",
     type: "district",
     center: [45.476, -75.528],
+    polygon: [
+      [45.486, -75.54],
+      [45.488, -75.514],
+      [45.468, -75.511],
+      [45.466, -75.537],
+    ],
     scores: {
       market: 72,
       infrastructure: 64,
@@ -156,6 +187,12 @@ export const areas: AreaRecord[] = [
     name: "Blair Station Area",
     type: "station_area",
     center: [45.431, -75.614],
+    polygon: [
+      [45.437, -75.628],
+      [45.439, -75.604],
+      [45.425, -75.601],
+      [45.423, -75.624],
+    ],
     scores: {
       market: 68,
       infrastructure: 73,
@@ -183,6 +220,12 @@ export const areas: AreaRecord[] = [
     name: "Barrhaven Town Centre",
     type: "district",
     center: [45.273, -75.735],
+    polygon: [
+      [45.281, -75.75],
+      [45.283, -75.721],
+      [45.265, -75.718],
+      [45.263, -75.746],
+    ],
     scores: {
       market: 66,
       infrastructure: 60,
@@ -210,6 +253,12 @@ export const areas: AreaRecord[] = [
     name: "Rideau Mainstreet",
     type: "corridor",
     center: [45.426, -75.682],
+    polygon: [
+      [45.432, -75.695],
+      [45.434, -75.668],
+      [45.418, -75.665],
+      [45.417, -75.692],
+    ],
     scores: {
       market: 82,
       infrastructure: 70,

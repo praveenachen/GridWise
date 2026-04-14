@@ -1,6 +1,6 @@
 "use client";
 
-import { MapContainer, TileLayer, CircleMarker, Tooltip } from "react-leaflet";
+import { MapContainer, TileLayer, Polygon, Tooltip } from "react-leaflet";
 import type { AreaRecord } from "../data/areas";
 import { computeReadiness, scoreColor } from "../lib/scoring";
 
@@ -27,18 +27,22 @@ export default function MapView({ areas, selectedId, onSelect }: MapViewProps) {
         const isSelected = area.id === selectedId;
         const baseColor = scoreColor(score);
         return (
-          <CircleMarker
+          <Polygon
             key={area.id}
-            center={area.center}
-            radius={isSelected ? 14 : 10}
+            positions={area.polygon}
             pathOptions={{
               color: isSelected ? "#0f6b5b" : baseColor,
               fillColor: isSelected ? "#0f6b5b" : baseColor,
-              fillOpacity: isSelected ? 0.9 : 0.65,
+              fillOpacity: isSelected ? 0.45 : 0.3,
               weight: isSelected ? 2 : 1,
             }}
             eventHandlers={{
               click: () => onSelect(area.id),
+              mouseover: (event) => event.target.setStyle({ fillOpacity: 0.6 }),
+              mouseout: (event) =>
+                event.target.setStyle({
+                  fillOpacity: isSelected ? 0.45 : 0.3,
+                }),
             }}
           >
             <Tooltip direction="top" offset={[0, -8]} opacity={1}>
@@ -50,7 +54,7 @@ export default function MapView({ areas, selectedId, onSelect }: MapViewProps) {
                 </div>
               </div>
             </Tooltip>
-          </CircleMarker>
+          </Polygon>
         );
       })}
     </MapContainer>
