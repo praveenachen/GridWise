@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from "react";
 import MapView from "./components/MapView";
-import ScoreBreakdown from "./components/ScoreBreakdown";
 import MetricDetails from "./components/MetricDetails";
 import ActionDetails from "./components/ActionDetails";
 import SourceEvidence from "./components/SourceEvidence";
@@ -211,28 +210,31 @@ export default function Home() {
             </div>
           </div>
           <div className="mt-5 space-y-4">
-            <ScoreBreakdown area={selected as AreaRecord} />
             <div className="space-y-2">
               <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
                 Metric Details
               </p>
               <MetricDetails
                 title="Market"
+                value={selected?.scores.market ?? 0}
                 details={selected?.score_details.market ?? []}
                 evidence={selected?.source_evidence ?? []}
               />
               <MetricDetails
                 title="Infrastructure"
+                value={selected?.scores.infrastructure ?? 0}
                 details={selected?.score_details.infrastructure ?? []}
                 evidence={selected?.source_evidence ?? []}
               />
               <MetricDetails
                 title="Policy"
+                value={selected?.scores.policy ?? 0}
                 details={selected?.score_details.policy ?? []}
                 evidence={selected?.source_evidence ?? []}
               />
               <MetricDetails
                 title="Strategic"
+                value={selected?.scores.strategic ?? 0}
                 details={selected?.score_details.strategic ?? []}
                 evidence={selected?.source_evidence ?? []}
               />
