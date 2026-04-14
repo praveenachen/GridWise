@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import MapView from "./components/MapView";
 import ScoreBreakdown from "./components/ScoreBreakdown";
+import MetricDetails from "./components/MetricDetails";
 import { areas, type AreaRecord } from "./data/areas";
 import { computeReadiness, scoreBand, scoreSoftColor } from "./lib/scoring";
 
@@ -217,6 +218,31 @@ export default function Home() {
           </div>
           <div className="mt-5 space-y-4">
             <ScoreBreakdown area={selected as AreaRecord} />
+            <div className="space-y-2">
+              <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
+                Metric Details
+              </p>
+              <MetricDetails
+                title="Market"
+                value={selected?.scores.market ?? 0}
+                details={selected?.score_details.market ?? []}
+              />
+              <MetricDetails
+                title="Infrastructure"
+                value={selected?.scores.infrastructure ?? 0}
+                details={selected?.score_details.infrastructure ?? []}
+              />
+              <MetricDetails
+                title="Policy"
+                value={selected?.scores.policy ?? 0}
+                details={selected?.score_details.policy ?? []}
+              />
+              <MetricDetails
+                title="Strategic"
+                value={selected?.scores.strategic ?? 0}
+                details={selected?.score_details.strategic ?? []}
+              />
+            </div>
             <div className="rounded-2xl border border-[var(--line)] bg-white p-4">
               <h3 className="text-sm font-semibold text-[var(--muted)]">
                 Why this score

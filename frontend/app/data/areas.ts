@@ -10,6 +10,12 @@ export type AreaRecord = {
     policy: number;
     strategic: number;
   };
+  score_details: {
+    market: string[];
+    infrastructure: string[];
+    policy: string[];
+    strategic: string[];
+  };
   main_constraint: string;
   why_bullets: string[];
   recommended_actions: string[];
@@ -33,6 +39,28 @@ export const areas: AreaRecord[] = [
       infrastructure: 62,
       policy: 70,
       strategic: 66,
+    },
+    score_details: {
+      market: [
+        "Active developer inquiries along transit corridor",
+        "Recent mixed-use applications within 1 km",
+        "Land values trending above city median",
+      ],
+      infrastructure: [
+        "Water servicing upgrades not yet funded",
+        "Transit reliability improves in next cycle",
+        "Limited near-term sewer capacity headroom",
+      ],
+      policy: [
+        "Intensification corridor designation supports density",
+        "Secondary plan encourages mid-rise form",
+        "Zoning alignment pending in key nodes",
+      ],
+      strategic: [
+        "Priority corridor for mode shift and housing supply",
+        "Near major employment and institutional anchors",
+        "Alignment with growth management objectives",
+      ],
     },
     main_constraint: "Servicing capacity upgrades not yet funded",
     why_bullets: [
@@ -67,6 +95,28 @@ export const areas: AreaRecord[] = [
       policy: 74,
       strategic: 72,
     },
+    score_details: {
+      market: [
+        "Moderate demand tied to station-area redevelopment",
+        "Limited recent application volume",
+        "Market interest improves with land assembly",
+      ],
+      infrastructure: [
+        "Transit service is already in place",
+        "Trunk infrastructure capacity available",
+        "Few near-term servicing constraints",
+      ],
+      policy: [
+        "Station area designated for higher density",
+        "Mixed-use permissions already in place",
+        "Policy aligns with transit-oriented growth",
+      ],
+      strategic: [
+        "Key interchange for east-west connectivity",
+        "Supports climate and mode-shift targets",
+        "Identified as a growth node",
+      ],
+    },
     main_constraint: "Site assembly and phasing complexity",
     why_bullets: [
       "Transit-accessible node with strong policy support",
@@ -99,6 +149,28 @@ export const areas: AreaRecord[] = [
       infrastructure: 58,
       policy: 68,
       strategic: 80,
+    },
+    score_details: {
+      market: [
+        "Strong market interest near transit interchange",
+        "Multiple sites with redevelopment potential",
+        "Retail vacancy signals re-use opportunities",
+      ],
+      infrastructure: [
+        "Upgrades identified but not scheduled",
+        "Capacity constraints for near-term growth",
+        "Funding trigger not yet confirmed",
+      ],
+      policy: [
+        "Policy supports mixed-use intensification",
+        "District plan encourages employment density",
+        "Zoning updates still required",
+      ],
+      strategic: [
+        "High strategic priority in growth strategy",
+        "Interchange location supports multimodal access",
+        "Critical node for housing supply targets",
+      ],
     },
     main_constraint: "Planned infrastructure upgrades not yet scheduled",
     why_bullets: [
@@ -133,6 +205,28 @@ export const areas: AreaRecord[] = [
       policy: 62,
       strategic: 58,
     },
+    score_details: {
+      market: [
+        "Steady but moderate redevelopment interest",
+        "Limited recent mid-rise proposals",
+        "Market grows with transit improvements",
+      ],
+      infrastructure: [
+        "Transit capacity upgrades scheduled later",
+        "Servicing upgrades planned but unfunded",
+        "Road capacity constraints in peak periods",
+      ],
+      policy: [
+        "Mixed-use nodes identified in plans",
+        "Policy direction supports gradual intensification",
+        "Zoning updates required for higher density",
+      ],
+      strategic: [
+        "Supports corridor connectivity goals",
+        "Moderate priority relative to other nodes",
+        "Opportunity to stage growth over time",
+      ],
+    },
     main_constraint: "Limited near-term transit capacity upgrades",
     why_bullets: [
       "Moderate market interest with steady redevelopment pressure",
@@ -165,6 +259,28 @@ export const areas: AreaRecord[] = [
       infrastructure: 64,
       policy: 70,
       strategic: 60,
+    },
+    score_details: {
+      market: [
+        "Strong east-end housing demand",
+        "Growing interest near town centre",
+        "Potential for mixed-use redevelopment",
+      ],
+      infrastructure: [
+        "Servicing timing under review",
+        "Water/wastewater upgrades anticipated",
+        "Transit capacity moderate but improving",
+      ],
+      policy: [
+        "Town centre designated for higher density",
+        "Secondary plan supports mixed-use growth",
+        "Policy alignment generally strong",
+      ],
+      strategic: [
+        "Important for east-end balance",
+        "Moderate priority in citywide sequencing",
+        "Opportunity to align with transit phases",
+      ],
     },
     main_constraint: "Unclear funding timing for servicing upgrades",
     why_bullets: [
@@ -199,6 +315,28 @@ export const areas: AreaRecord[] = [
       policy: 76,
       strategic: 74,
     },
+    score_details: {
+      market: [
+        "Steady interest for transit-adjacent sites",
+        "Retail conversion opportunities emerging",
+        "Market activity depends on parcel assembly",
+      ],
+      infrastructure: [
+        "Transit service already in place",
+        "Servicing capacity largely sufficient",
+        "Few near-term infrastructure blockers",
+      ],
+      policy: [
+        "Policy supports transit-oriented density",
+        "Mixed-use permissions already defined",
+        "Good alignment with growth direction",
+      ],
+      strategic: [
+        "High strategic value for modal shift",
+        "Supports housing diversification goals",
+        "Aligns with station-area planning priorities",
+      ],
+    },
     main_constraint: "Fragmented parcels slow coordinated delivery",
     why_bullets: [
       "Station area supports transit-oriented development",
@@ -232,6 +370,28 @@ export const areas: AreaRecord[] = [
       policy: 58,
       strategic: 62,
     },
+    score_details: {
+      market: [
+        "Strong suburban demand for mixed-use",
+        "Limited recent high-density proposals",
+        "Market response improves with policy clarity",
+      ],
+      infrastructure: [
+        "Moderate servicing capacity available",
+        "Upgrade needs emerging for future phases",
+        "Transit expansion improves medium-term",
+      ],
+      policy: [
+        "Secondary plan updates needed",
+        "Zoning permissions lag market interest",
+        "Policy direction requires refinement",
+      ],
+      strategic: [
+        "Key suburban centre for balanced growth",
+        "Supports community service delivery",
+        "Requires coordinated investment sequencing",
+      ],
+    },
     main_constraint: "Policy updates needed for higher densities",
     why_bullets: [
       "Strong market interest in suburban mixed-use",
@@ -264,6 +424,28 @@ export const areas: AreaRecord[] = [
       infrastructure: 70,
       policy: 78,
       strategic: 76,
+    },
+    score_details: {
+      market: [
+        "High demand for central mixed-use sites",
+        "Strong redevelopment pressure already visible",
+        "Market fundamentals exceed city average",
+      ],
+      infrastructure: [
+        "Infrastructure generally adequate",
+        "Public realm upgrades still needed",
+        "Transit access already strong",
+      ],
+      policy: [
+        "Mainstreet intensification policies in place",
+        "As-of-right permissions expanding",
+        "Policy strongly aligned with growth goals",
+      ],
+      strategic: [
+        "Flagship corridor for housing supply targets",
+        "Supports walkability and mode shift",
+        "High visibility for near-term wins",
+      ],
     },
     main_constraint: "Public realm upgrades needed to support density",
     why_bullets: [
