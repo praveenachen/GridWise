@@ -5,6 +5,7 @@ import MapView from "./components/MapView";
 import ScoreBreakdown from "./components/ScoreBreakdown";
 import MetricDetails from "./components/MetricDetails";
 import ActionDetails from "./components/ActionDetails";
+import SourceEvidence from "./components/SourceEvidence";
 import { areas, type AreaRecord } from "./data/areas";
 import { computeReadiness, scoreBand, scoreSoftColor } from "./lib/scoring";
 
@@ -248,18 +249,7 @@ export default function Home() {
                 ))}
               </ul>
             </div>
-            <div className="rounded-2xl border border-[var(--line)] bg-white p-4">
-              <h3 className="text-sm font-semibold text-[var(--muted)]">
-                Evidence Notes
-              </h3>
-              <ul className="mt-3 space-y-2 text-sm text-[var(--muted)]">
-                {selected?.evidence_notes.map((note) => (
-                  <li key={note} className="rounded-lg bg-[#f7f7f3] px-3 py-2">
-                    {note}
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <SourceEvidence evidence={selected?.source_evidence ?? []} />
           </div>
         </section>
       </main>

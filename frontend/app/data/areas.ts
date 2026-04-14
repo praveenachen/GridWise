@@ -21,6 +21,7 @@ export type AreaRecord = {
   recommended_actions: string[];
   action_details: string[];
   evidence_notes: string[];
+  source_evidence: { source: string; excerpt: string }[];
 };
 
 export const areas: AreaRecord[] = [
@@ -83,6 +84,18 @@ export const areas: AreaRecord[] = [
       "Designated intensification corridor in planning docs",
       "Capital plan identifies future water main upgrades",
     ],
+    source_evidence: [
+      {
+        source: "Official Plan (Growth Management)",
+        excerpt:
+          "Corridor identified for intensification with mid-rise built form.",
+      },
+      {
+        source: "Infrastructure Master Plan",
+        excerpt:
+          "Water and wastewater upgrades listed for future funding cycles.",
+      },
+    ],
   },
   {
     id: "station_hurdman",
@@ -142,6 +155,18 @@ export const areas: AreaRecord[] = [
     evidence_notes: [
       "Station area identified as a growth node",
       "Existing trunk infrastructure capacity available",
+    ],
+    source_evidence: [
+      {
+        source: "Official Plan (Station Areas)",
+        excerpt:
+          "Station areas prioritized for higher-density, mixed-use growth.",
+      },
+      {
+        source: "Transportation Master Plan",
+        excerpt:
+          "Hurdman interchange supports high-capacity transit access.",
+      },
     ],
   },
   {
@@ -203,6 +228,17 @@ export const areas: AreaRecord[] = [
       "Interchange area highlighted as a priority node",
       "Servicing program under review",
     ],
+    source_evidence: [
+      {
+        source: "Official Plan (Strategic Growth Areas)",
+        excerpt:
+          "Bayview identified as a strategic node for growth and mobility.",
+      },
+      {
+        source: "Infrastructure Master Plan",
+        excerpt: "Servicing schedule under review; upgrades not yet scheduled.",
+      },
+    ],
   },
   {
     id: "corridor_baseline",
@@ -262,6 +298,17 @@ export const areas: AreaRecord[] = [
     evidence_notes: [
       "Corridor identified for gradual intensification",
       "Transit expansion noted for later phases",
+    ],
+    source_evidence: [
+      {
+        source: "Official Plan (Corridors)",
+        excerpt: "Baseline corridor targeted for gradual intensification.",
+      },
+      {
+        source: "Transportation Master Plan",
+        excerpt:
+          "Capacity upgrades planned in later phases of the program window.",
+      },
     ],
   },
   {
@@ -323,6 +370,16 @@ export const areas: AreaRecord[] = [
       "Town centre designated for intensified growth",
       "Servicing program awaiting prioritization",
     ],
+    source_evidence: [
+      {
+        source: "Official Plan (Town Centres)",
+        excerpt: "Orleans Town Centre designated for higher density.",
+      },
+      {
+        source: "Infrastructure Master Plan",
+        excerpt: "Servicing timing under review; upgrades anticipated.",
+      },
+    ],
   },
   {
     id: "station_blair",
@@ -382,6 +439,16 @@ export const areas: AreaRecord[] = [
     evidence_notes: [
       "Station area identified as a growth node",
       "Transit service is already in place",
+    ],
+    source_evidence: [
+      {
+        source: "Official Plan (Station Areas)",
+        excerpt: "Blair station area supports transit-oriented density.",
+      },
+      {
+        source: "Transportation Master Plan",
+        excerpt: "Existing transit service provides strong access.",
+      },
     ],
   },
   {
@@ -443,6 +510,17 @@ export const areas: AreaRecord[] = [
       "Town centre identified for future intensification",
       "Policy updates pending",
     ],
+    source_evidence: [
+      {
+        source: "Official Plan (Town Centres)",
+        excerpt:
+          "Barrhaven Town Centre identified for future intensification.",
+      },
+      {
+        source: "Secondary Plan Update",
+        excerpt: "Policy updates pending to enable higher density.",
+      },
+    ],
   },
   {
     id: "corridor_rideau",
@@ -502,6 +580,16 @@ export const areas: AreaRecord[] = [
     evidence_notes: [
       "Mainstreet identified for growth and intensification",
       "Public realm upgrade list pending funding",
+    ],
+    source_evidence: [
+      {
+        source: "Official Plan (Mainstreets)",
+        excerpt: "Rideau Mainstreet prioritized for intensification.",
+      },
+      {
+        source: "Capital Plan",
+        excerpt: "Public realm upgrades listed but not yet funded.",
+      },
     ],
   },
 ];
