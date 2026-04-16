@@ -9,6 +9,7 @@ type MapViewProps = {
   selectedId: string;
   onSelect: (id: string) => void;
   weights?: WeightProfile;
+  scoresById?: Record<string, number>;
 };
 
 export default function MapView({
@@ -16,6 +17,7 @@ export default function MapView({
   selectedId,
   onSelect,
   weights,
+  scoresById,
 }: MapViewProps) {
   return (
     <MapContainer
@@ -29,7 +31,7 @@ export default function MapView({
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       {areas.map((area) => {
-        const score = computeReadiness(area, weights);
+        const score = scoresById?.[area.id] ?? computeReadiness(area, weights);
         const isSelected = area.id === selectedId;
         const baseColor = scoreColor(score);
         return (
