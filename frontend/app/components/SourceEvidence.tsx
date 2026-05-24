@@ -17,7 +17,7 @@ export default function SourceEvidence({ evidence }: SourceEvidenceProps) {
   return (
     <details className="rounded-2xl border border-[var(--line)] bg-white p-4">
       <summary className="flex cursor-pointer items-center justify-between text-sm font-semibold text-[var(--muted)]">
-        <span>Source Evidence</span>
+        <span>Evidence Used</span>
         <svg
           className="h-4 w-4"
           viewBox="0 0 20 20"

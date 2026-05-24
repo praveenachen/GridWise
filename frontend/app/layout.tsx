@@ -13,9 +13,9 @@ const body = Source_Sans_3({
 });
 
 export const metadata: Metadata = {
-  title: "Growth Readiness Dashboard",
+  title: "GridWise Growth and Mobility Readiness",
   description:
-    "Decision-support prototype for identifying growth readiness and constraints.",
+    "AI-assisted municipal planning workflow for growth, mobility, infrastructure, and policy readiness.",
 };
 
 export default function RootLayout({

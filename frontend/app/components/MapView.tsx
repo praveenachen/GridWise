@@ -1,6 +1,7 @@
 "use client";
 
 import { MapContainer, TileLayer, Polygon, Tooltip } from "react-leaflet";
+import type { LatLngExpression } from "leaflet";
 import type { AreaRecord } from "../data/areas";
 import { computeReadiness, scoreColor, type WeightProfile } from "../lib/scoring";
 
@@ -19,11 +20,13 @@ export default function MapView({
   weights,
   scoresById,
 }: MapViewProps) {
+  const ottawaCenter: LatLngExpression = [45.405, -75.69];
+
   return (
     <MapContainer
-      center={[45.405, -75.69]}
+      center={ottawaCenter}
       zoom={12}
-      className="h-[420px] w-full rounded-2xl border border-[var(--line)] shadow-sm"
+      className="h-[430px] w-full rounded-2xl border border-[var(--line)] shadow-sm"
       scrollWheelZoom={false}
     >
       <TileLayer
@@ -39,10 +42,11 @@ export default function MapView({
             key={area.id}
             positions={area.polygon}
             pathOptions={{
-              color: isSelected ? "#0f6b5b" : baseColor,
+              color: isSelected ? "#073f37" : baseColor,
               fillColor: isSelected ? "#0f6b5b" : baseColor,
-              fillOpacity: isSelected ? 0.45 : 0.3,
-              weight: isSelected ? 2 : 1,
+              fillOpacity: isSelected ? 0.52 : 0.24,
+              opacity: isSelected ? 1 : 0.72,
+              weight: isSelected ? 4 : 1.5,
             }}
             eventHandlers={{
               click: () => onSelect(area.id),

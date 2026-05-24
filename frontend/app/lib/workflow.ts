@@ -7,7 +7,12 @@ export type DeveloperInputs = {
   zoningCertainty: "low" | "medium" | "high";
 };
 
-export type PriorityKey = "market" | "infrastructure" | "policy" | "strategic";
+export type PriorityKey =
+  | "market"
+  | "mobility"
+  | "infrastructure"
+  | "policy"
+  | "strategic";
 
 export const defaultDeveloperInputs: DeveloperInputs = {
   projectType: "mixed-use",
@@ -22,6 +27,11 @@ export const cityPriorityLabels: Array<{
   hint: string;
 }> = [
   {
+    key: "mobility",
+    label: "Mobility readiness",
+    hint: "Reflects transit access, active transportation, sidewalk completeness, safety exposure, and network connectivity.",
+  },
+  {
     key: "policy",
     label: "Intensification / OP alignment",
     hint: "Shows how strongly the Official Plan supports growth on this parcel.",
@@ -34,7 +44,7 @@ export const cityPriorityLabels: Array<{
   {
     key: "infrastructure",
     label: "Servicing readiness",
-    hint: "Highlights water, wastewater, transit, and capital-readiness signals.",
+    hint: "Highlights water, wastewater, utilities, and capital-readiness signals.",
   },
   {
     key: "market",
@@ -45,17 +55,18 @@ export const cityPriorityLabels: Array<{
 
 export const lensPrompts: Record<LensMode, string[]> = {
   city: [
-    "Provide a parcel overview and explain the main planning context.",
-    "What policies or restrictions pertain to this lot?",
-    "How may the current policies influence growth potential here?",
-    "Which Official Plan, TMP, IMP, or zoning sections matter most here?",
-    "Is there any sign of a policy conflict, outdated restriction, or flexibility issue?",
-    "What mitigation, clarification, or City review action should staff consider next?",
+    "Generate a short planning brief for this area.",
+    "Why is this area ranked highly?",
+    "What transportation constraints affect this area?",
+    "Which infrastructure upgrades would unlock growth here?",
+    "What should the city prioritize next?",
+    "Which sequencing or policy considerations matter most?",
   ],
   developer: [
-    "Provide a feasibility overview for this project.",
+    "Generate a short planning brief for this area.",
     "What are the biggest delivery risks or blockers for this parcel?",
-    "Which policies, zoning rules, or servicing constraints matter most?",
+    "How does mobility readiness affect feasibility?",
+    "Which policies, zoning rules, servicing, or mobility constraints matter most?",
     "How do project scale, density, and timeline affect feasibility here?",
     "What approvals, clarifications, or infrastructure changes would improve viability?",
     "What would make this project more feasible in the next 12-24 months?",

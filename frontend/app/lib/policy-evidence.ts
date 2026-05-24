@@ -180,8 +180,9 @@ function scoreSnippet(
   const lensBoosts: Record<LensMode, Record<string, number>> = {
     city: {
       official_plan: 24,
-      transportation: 18,
+      transportation: 24,
       zoning: 18,
+      mobility: 18,
       financial: 10,
       supporting: 8,
       legacy: 4,
@@ -190,7 +191,8 @@ function scoreSnippet(
       zoning: 26,
       official_plan: 16,
       infrastructure: 22,
-      transportation: 14,
+      transportation: 20,
+      mobility: 18,
       financial: 20,
       supporting: 8,
       legacy: 4,
@@ -235,6 +237,9 @@ function scoreSnippet(
   }
 
   if (text.includes("policy") || text.includes("restriction")) score += 6;
+  if (text.includes("transit") || text.includes("transportation")) score += 7;
+  if (text.includes("sidewalk") || text.includes("cycling")) score += 5;
+  if (text.includes("safety") || text.includes("collision")) score += 5;
   if (text.includes("servicing") || text.includes("capacity")) score += 5;
   if (text.includes("funding") || text.includes("capital")) score += 5;
   if (text.includes("zoning") || text.includes("density")) score += 5;

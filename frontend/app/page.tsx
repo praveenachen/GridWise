@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import MetricDetails from "./components/MetricDetails";
 import ActionDetails from "./components/ActionDetails";
 import SourceEvidence from "./components/SourceEvidence";
@@ -48,10 +48,11 @@ type ReadinessSnapshot = {
 const dashboardStorageKey = "ottawa-growth-dashboard-settings";
 
 const defaultCityWeights: WeightProfile = {
-  market: 18,
+  mobility: 28,
   infrastructure: 22,
-  policy: 32,
-  strategic: 28,
+  policy: 24,
+  strategic: 16,
+  market: 10,
 };
 
 function loadDashboardPreferences(): DashboardPreferences | null {
@@ -68,11 +69,13 @@ function loadDashboardPreferences(): DashboardPreferences | null {
 function normalizeWeights(weights: WeightProfile): WeightProfile {
   const total =
     weights.market +
+    weights.mobility +
     weights.infrastructure +
     weights.policy +
     weights.strategic || 1;
   return {
     market: weights.market / total,
+    mobility: weights.mobility / total,
     infrastructure: weights.infrastructure / total,
     policy: weights.policy / total,
     strategic: weights.strategic / total,
@@ -81,15 +84,18 @@ function normalizeWeights(weights: WeightProfile): WeightProfile {
 
 function deriveDeveloperWeights(inputs: DeveloperInputs): WeightProfile {
   const weights: WeightProfile = { ...defaultWeights };
-  weights.market = 34;
-  weights.infrastructure = 34;
-  weights.policy = 18;
-  weights.strategic = 14;
+  weights.market = 24;
+  weights.mobility = 24;
+  weights.infrastructure = 26;
+  weights.policy = 16;
+  weights.strategic = 10;
 
   if (inputs.projectType === "residential") {
     weights.market += 3;
+    weights.mobility += 2;
     weights.policy += 2;
   } else if (inputs.projectType === "mixed-use") {
+    weights.mobility += 3;
     weights.policy += 3;
     weights.strategic += 2;
   } else {
@@ -98,6 +104,7 @@ function deriveDeveloperWeights(inputs: DeveloperInputs): WeightProfile {
   }
 
   if (inputs.timeline === "0-2 years") {
+    weights.mobility += 3;
     weights.infrastructure += 5;
     weights.policy += 2;
     weights.market -= 2;
@@ -113,6 +120,7 @@ function deriveDeveloperWeights(inputs: DeveloperInputs): WeightProfile {
 
   if (inputs.servicingSensitivity === "high") {
     weights.infrastructure += 6;
+    weights.mobility += 1;
     weights.market -= 2;
   } else if (inputs.servicingSensitivity === "low") {
     weights.infrastructure -= 2;
@@ -134,6 +142,37 @@ function formatWeightPercent(value: number) {
   return `${Math.round(value * 100)}%`;
 }
 
+function formatAreaType(type: AreaRecord["type"]) {
+  return type.replace("_", " ");
+}
+
+function getScoreDrivers(area: AreaRecord | undefined) {
+  if (!area) {
+    return {
+      strongest: "No area selected",
+      blocker: "Select an area to see score drivers.",
+    };
+  }
+
+  const entries = Object.entries(area.scores) as Array<
+    [keyof AreaRecord["scores"], number]
+  >;
+  const [strongestKey, strongestValue] = entries.reduce((prev, current) =>
+    current[1] > prev[1] ? current : prev,
+  );
+  const [weakestKey, weakestValue] = entries.reduce((prev, current) =>
+    current[1] < prev[1] ? current : prev,
+  );
+  const strongestLabel =
+    strongestKey.charAt(0).toUpperCase() + strongestKey.slice(1);
+  const weakestLabel = weakestKey.charAt(0).toUpperCase() + weakestKey.slice(1);
+
+  return {
+    strongest: `${strongestLabel} is the strongest positive driver at ${strongestValue}.`,
+    blocker: `${weakestLabel} is the main blocker at ${weakestValue}.`,
+  };
+}
+
 export default function Home() {
   const [query, setQuery] = useState("");
   const [filterHigh, setFilterHigh] = useState(false);
@@ -146,6 +185,7 @@ export default function Home() {
   const [readinessSnapshot, setReadinessSnapshot] =
     useState<ReadinessSnapshot | null>(null);
   const [isRefreshingScores, setIsRefreshingScores] = useState(false);
+  const [briefRequestKey, setBriefRequestKey] = useState(0);
 
   const activeWeights = useMemo(
     () =>
@@ -161,8 +201,11 @@ export default function Home() {
     );
   }, [readinessSnapshot]);
 
-  const getScoreForArea = (area: AreaRecord) =>
-    scoreByAreaId.get(area.id) ?? computeReadiness(area, activeWeights);
+  const getScoreForArea = useCallback(
+    (area: AreaRecord) =>
+      scoreByAreaId.get(area.id) ?? computeReadiness(area, activeWeights),
+    [activeWeights, scoreByAreaId],
+  );
 
   const filteredAreas = useMemo(() => {
     return areas.filter((area) => {
@@ -173,12 +216,13 @@ export default function Home() {
       if (!filterHigh) return true;
       return getScoreForArea(area) >= 75;
     });
-  }, [query, filterHigh, activeWeights, scoreByAreaId]);
+  }, [query, filterHigh, getScoreForArea]);
 
   const visibleAreas = filteredAreas.length ? filteredAreas : areas;
   const selected =
     visibleAreas.find((area) => area.id === selectedId) ?? visibleAreas[0];
   const selectedScore = selected ? getScoreForArea(selected) : 0;
+  const scoreDrivers = getScoreDrivers(selected);
 
   const readinessScores = visibleAreas.map((area) => ({
     id: area.id,
@@ -275,34 +319,40 @@ export default function Home() {
 
   const assistantSummary =
     activeLens === "city"
-      ? `Selected parcel overview: ${selected?.name ?? "This parcel"} is a ${scoreBand(
+      ? `Selected area overview: ${selected?.name ?? "This area"} is a ${scoreBand(
           selectedScore,
-        )} readiness area. Main constraint: ${
+        )} growth and mobility readiness area. Mobility score: ${
+          selected?.scores.mobility ?? "not available"
+        }. Main constraint: ${
           selected?.main_constraint ?? "not yet identified"
         }. Recommended action: ${
           selected?.recommended_actions[0] ??
-          "Review policy direction, servicing timing, and next staff action."
+          "Review mobility, servicing, policy direction, and next municipal action."
         }`
-      : `Selected parcel overview: ${selected?.name ?? "This parcel"} shows ${
+      : `Selected area overview: ${selected?.name ?? "This area"} shows ${
           scoreBand(selectedScore)
-        } readiness from a developer feasibility perspective. Main constraint: ${
+        } readiness from a developer delivery perspective. Mobility score: ${
+          selected?.scores.mobility ?? "not available"
+        }. Main constraint: ${
           selected?.main_constraint ?? "not yet identified"
         }. Recommended action: ${
           selected?.recommended_actions[0] ??
-          "Test project assumptions against servicing, zoning, and timing."
+          "Test project assumptions against mobility, servicing, zoning, and timing."
         }`;
 
   const assistantContextLines =
     activeLens === "city"
       ? [
+          `Mobility ${formatWeightPercent(activeWeights.mobility)}`,
           `Policy ${formatWeightPercent(activeWeights.policy)}`,
-          `Strategic ${formatWeightPercent(activeWeights.strategic)}`,
           `Infrastructure ${formatWeightPercent(activeWeights.infrastructure)}`,
+          `Strategic ${formatWeightPercent(activeWeights.strategic)}`,
           `Market ${formatWeightPercent(activeWeights.market)}`,
         ]
       : [
           `Project ${developerInputs.projectType}`,
           `Timeline ${developerInputs.timeline}`,
+          `Mobility ${formatWeightPercent(activeWeights.mobility)}`,
           `Servicing ${developerInputs.servicingSensitivity}`,
           `Zoning ${developerInputs.zoningCertainty}`,
         ];
@@ -314,18 +364,22 @@ export default function Home() {
       : "Local fallback";
 
   return (
-    <div className="min-h-screen px-6 py-8 lg:px-10">
-      <header className="mb-8">
+    <div className="min-h-screen px-6 py-6 lg:px-10">
+      <header className="mb-5">
         <div className="flex flex-col gap-3">
           <p className="text-xs uppercase tracking-[0.28em] text-[var(--muted)]">
-            City of Ottawa Prototype
+            GridWise Portfolio Prototype
           </p>
           <h1 className="text-3xl font-semibold text-[var(--foreground)] lg:text-4xl">
-            Growth Readiness Dashboard
+            GridWise Growth and Mobility Readiness
           </h1>
-          <p className="max-w-2xl text-base text-[var(--muted)] lg:text-lg">
-            Identify where growth is likely, how ready areas are, and what actions
-            can unlock near-term housing.
+          <p className="max-w-xl text-base text-[var(--muted)]">
+            AI-assisted workflow for prioritizing growth areas, mobility
+            constraints, and next municipal actions.
+          </p>
+          <p className="max-w-3xl text-sm text-[var(--muted)]">
+            Uses sample/demo data for portfolio purposes. GridWise is not an
+            official municipal planning tool.
           </p>
         </div>
       </header>
@@ -373,9 +427,11 @@ export default function Home() {
                   }`}
                 >
                   <span className="text-sm font-semibold">{area.name}</span>
-                  <span className="text-xs text-[var(--muted)]">{area.type}</span>
+                  <span className="text-xs capitalize text-[var(--muted)]">
+                    {formatAreaType(area.type)}
+                  </span>
                   <span className="mt-2 text-xs font-semibold text-[var(--accent)]">
-                    Readiness {score}
+                    Growth + mobility {score}
                   </span>
                 </button>
               );
@@ -384,30 +440,30 @@ export default function Home() {
         </section>
 
         <section className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-3">
-            <div className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-4 shadow-sm">
+          <div className="grid gap-3 md:grid-cols-3">
+            <div className="rounded-xl border border-[var(--line)] bg-[var(--surface)] px-4 py-3 shadow-sm">
               <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
-                Average Readiness
+                Average Score
               </p>
-              <p className="mt-2 text-3xl font-semibold text-[var(--accent)]">
+              <p className="mt-1 text-2xl font-semibold text-[var(--accent)]">
                 {averageScore}
               </p>
               <p className="text-sm text-[var(--muted)]">
                 Across {readinessScores.length} areas
               </p>
             </div>
-            <div className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-4 shadow-sm">
+            <div className="rounded-xl border border-[var(--line)] bg-[var(--surface)] px-4 py-3 shadow-sm">
               <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
-                Highest Readiness
+                Highest Priority
               </p>
-              <p className="mt-2 text-lg font-semibold">{highest.name}</p>
+              <p className="mt-1 text-base font-semibold">{highest.name}</p>
               <p className="text-sm text-[var(--muted)]">Score {highest.score}</p>
             </div>
-            <div className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-4 shadow-sm">
+            <div className="rounded-xl border border-[var(--line)] bg-[var(--surface)] px-4 py-3 shadow-sm">
               <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
-                Lowest Readiness
+                Needs Attention
               </p>
-              <p className="mt-2 text-lg font-semibold">{lowest.name}</p>
+              <p className="mt-1 text-base font-semibold">{lowest.name}</p>
               <p className="text-sm text-[var(--muted)]">Score {lowest.score}</p>
             </div>
           </div>
@@ -418,10 +474,12 @@ export default function Home() {
                 <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
                   Lens
                 </p>
-                <h2 className="text-lg font-semibold">Growth Readiness Map</h2>
+                <h2 className="text-lg font-semibold">
+                  Growth + Mobility Readiness Map
+                </h2>
                 <p className="text-sm text-[var(--muted)]">
-                  Switch between a City planning lens and a Developer feasibility
-                  lens.
+                  City lens prioritizes public action and sequencing. Developer
+                  lens tests delivery risk, approvals, servicing, and timing.
                 </p>
               </div>
               <div className="flex rounded-full border border-[var(--line)] bg-white p-1 text-xs shadow-sm">
@@ -452,7 +510,7 @@ export default function Home() {
             <div className="mt-2 flex items-center justify-between text-xs text-[var(--muted)]">
               <span>{scoreStatus}</span>
               <span>
-                {selected ? `${selected.name} · ${selectedScore} readiness` : ""}
+                {selected ? `${selected.name} - ${selectedScore} readiness` : ""}
               </span>
             </div>
 
@@ -460,13 +518,16 @@ export default function Home() {
               <details className="mt-4 rounded-2xl border border-[var(--line)] bg-white p-4">
                 <summary className="flex cursor-pointer items-center justify-between gap-3 text-sm font-semibold">
                   <div>
-                    <h3 className="text-sm font-semibold">City Priorities</h3>
+                    <h3 className="text-sm font-semibold">
+                      City Planner Priorities
+                    </h3>
                     <p className="text-sm text-[var(--muted)]">
-                      Read-only OP priorities extracted into the scoring lens.
+                      Transparent weights for prioritizing public action,
+                      mobility readiness, and growth sequencing.
                     </p>
                   </div>
                   <span className="rounded-full bg-[var(--accent-soft)] px-3 py-1 text-xs font-semibold text-[var(--accent)]">
-                    OP-focused
+                    Workflow weights
                   </span>
                 </summary>
                 <div className="mt-4 space-y-4">
@@ -491,11 +552,35 @@ export default function Home() {
                   ))}
                 </div>
                 <p className="mt-3 text-xs text-[var(--muted)]">
-                  These priorities are visible for reference only, so the map can
-                  stay readable during the demo.
+                  These weights are visible so planners can audit why an area is
+                  ranked and which public constraints affect the recommendation.
                 </p>
               </details>
             ) : null}
+
+            <div className="mt-4 rounded-2xl border border-[var(--line)] bg-[#f8fbfa] px-4 py-3">
+              <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                <div>
+                  <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
+                    Selected Area
+                  </p>
+                  <h3 className="mt-1 text-lg font-semibold">
+                    {selected?.name} · {scoreBand(selectedScore)} readiness
+                  </h3>
+                  <p className="text-sm text-[var(--muted)]">
+                    Mobility {selected?.scores.mobility} · Main blocker:{" "}
+                    {selected?.main_constraint}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setBriefRequestKey((current) => current + 1)}
+                  className="rounded-full bg-[var(--accent)] px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[#0b5c50]"
+                >
+                  Generate Planning Brief
+                </button>
+              </div>
+            </div>
 
             <div className="mt-4">
               <MapView
@@ -525,9 +610,13 @@ export default function Home() {
           <div className="grid gap-4 md:grid-cols-2">
             <div className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-5 shadow-sm">
               <h3 className="text-sm font-semibold text-[var(--muted)]">
-                Main Constraint
+                Main Planning Constraint
               </h3>
               <p className="mt-2 text-lg font-semibold">{selected?.main_constraint}</p>
+              <p className="mt-3 text-sm text-[var(--muted)]">
+                Mobility readiness: {selected?.scores.mobility}.{" "}
+                {selected?.score_details.mobility[0]}
+              </p>
             </div>
             <ActionDetails
               actions={selected?.recommended_actions ?? []}
@@ -536,12 +625,12 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-5 shadow-sm">
+        <section className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-5 shadow-sm lg:sticky lg:top-6 lg:max-h-[calc(100vh-3rem)] lg:overflow-y-auto">
           <div className="flex items-start justify-between gap-2">
             <div>
-              <h2 className="text-lg font-semibold">Readiness Summary</h2>
+              <h2 className="text-lg font-semibold">Why This Area?</h2>
               <p className="text-sm text-[var(--muted)]">
-                {selected?.name} - {scoreBand(selectedScore)} readiness
+                {selected?.name} - {scoreBand(selectedScore)} growth and mobility readiness
               </p>
             </div>
             <div className="rounded-2xl bg-[var(--accent-soft)] px-4 py-2 text-2xl font-semibold text-[var(--accent)]">
@@ -551,12 +640,23 @@ export default function Home() {
           <div className="mt-5 space-y-4">
             <div className="space-y-2">
               <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
-                Metric Details
+                Explainable Score Drivers
               </p>
+              <div className="rounded-2xl border border-[var(--line)] bg-white p-4 text-sm">
+                <p className="font-semibold text-[var(--foreground)]">
+                  {scoreDrivers.strongest}
+                </p>
+                <p className="mt-1 text-[var(--muted)]">{scoreDrivers.blocker}</p>
+              </div>
               <MetricDetails
                 title="Market"
                 value={selected?.scores.market ?? 0}
                 details={selected?.score_details.market ?? []}
+              />
+              <MetricDetails
+                title="Mobility"
+                value={selected?.scores.mobility ?? 0}
+                details={selected?.score_details.mobility ?? []}
               />
               <MetricDetails
                 title="Infrastructure"
@@ -576,7 +676,7 @@ export default function Home() {
             </div>
             <div className="rounded-2xl border border-[var(--line)] bg-white p-4">
               <h3 className="text-sm font-semibold text-[var(--muted)]">
-                Why this score
+                Concise Reasoning
               </h3>
               <ul className="mt-3 space-y-2 text-sm">
                 {selected?.why_bullets.map((bullet) => (
@@ -605,6 +705,7 @@ export default function Home() {
         contextLines={assistantContextLines}
         developerInputs={developerInputs}
         onDeveloperInputsChange={setDeveloperInputs}
+        briefRequestKey={briefRequestKey}
       />
     </div>
   );

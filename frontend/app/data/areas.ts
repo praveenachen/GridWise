@@ -6,12 +6,14 @@ export type AreaRecord = {
   polygon: [number, number][];
   scores: {
     market: number;
+    mobility: number;
     infrastructure: number;
     policy: number;
     strategic: number;
   };
   score_details: {
     market: string[];
+    mobility: string[];
     infrastructure: string[];
     policy: string[];
     strategic: string[];
@@ -38,6 +40,7 @@ export const areas: AreaRecord[] = [
     ],
     scores: {
       market: 78,
+      mobility: 72,
       infrastructure: 62,
       policy: 70,
       strategic: 66,
@@ -47,6 +50,11 @@ export const areas: AreaRecord[] = [
         "Market readiness based on recent application activity near the corridor.",
         "Comparable mixed-use projects cited in growth area monitoring summaries.",
         "Land value trend aligns with central corridor demand signals.",
+      ],
+      mobility: [
+        "Frequent bus service and central corridor location create a strong mobility base.",
+        "Sidewalk continuity is generally present, but crossing comfort varies at key intersections.",
+        "Collision exposure and peak-period congestion make safety review important before intensification.",
       ],
       infrastructure: [
         "Infrastructure score reflects servicing notes in the Infrastructure Master Plan.",
@@ -67,16 +75,19 @@ export const areas: AreaRecord[] = [
     main_constraint: "Servicing capacity upgrades not yet funded",
     why_bullets: [
       "Strong development interest along the transit corridor",
+      "Transit access is useful, but safety and crossing gaps limit walkable intensification",
       "Official Plan supports mid-rise intensification",
       "Near-term water servicing upgrades are unfunded",
     ],
     recommended_actions: [
       "Advance servicing design and funding for 2026-2028",
+      "Flag Bronson for a corridor mobility and safety review before major approvals",
       "Prioritize zoning alignment for mid-rise as-of-right",
       "Coordinate with transit timing to reduce delivery risk",
     ],
     action_details: [
       "Confirm funding source, scope, and delivery window for servicing upgrades.",
+      "Assess collision history, pedestrian crossings, sidewalk comfort, and bus reliability at priority nodes.",
       "Draft zoning update package with targeted mid-rise permissions and standards.",
       "Align capital timing with transit reliability improvements to reduce risk.",
     ],
@@ -95,6 +106,11 @@ export const areas: AreaRecord[] = [
         excerpt:
           "Water and wastewater upgrades listed for future funding cycles.",
       },
+      {
+        source: "Transportation Master Plan",
+        excerpt:
+          "Central corridors require coordinated transit reliability, safety, and active transportation upgrades as growth intensifies.",
+      },
     ],
   },
   {
@@ -110,6 +126,7 @@ export const areas: AreaRecord[] = [
     ],
     scores: {
       market: 64,
+      mobility: 88,
       infrastructure: 80,
       policy: 74,
       strategic: 72,
@@ -119,6 +136,11 @@ export const areas: AreaRecord[] = [
         "Station-area market demand tracked in development pipeline reports.",
         "Application volume is moderate relative to other growth nodes.",
         "Market potential increases with coordinated land assembly.",
+      ],
+      mobility: [
+        "Rapid transit access is already in place at a major interchange station.",
+        "Regional pathway and transit connections support car-light trips.",
+        "Station access remains sensitive to first- and last-mile pedestrian connections across large parcels.",
       ],
       infrastructure: [
         "Transit service is already in place per TMP station profiles.",
@@ -139,16 +161,19 @@ export const areas: AreaRecord[] = [
     main_constraint: "Site assembly and phasing complexity",
     why_bullets: [
       "Transit-accessible node with strong policy support",
+      "Mobility readiness is high because rapid transit and pathway access are already present",
       "Servicing capacity largely in place",
       "Multiple parcels with complex ownership",
     ],
     recommended_actions: [
       "Launch targeted land assembly strategy",
+      "Prioritize first- and last-mile station access improvements",
       "Offer pre-application support for mixed-use proposals",
       "Coordinate with major employer anchors",
     ],
     action_details: [
       "Identify priority parcels and explore land swaps or acquisitions.",
+      "Map pedestrian desire lines, pathway gaps, and station access barriers before approving larger phases.",
       "Create a fast-track pre-application clinic for station-area proposals.",
       "Engage employers on shared infrastructure and phasing commitments.",
     ],
@@ -182,6 +207,7 @@ export const areas: AreaRecord[] = [
     ],
     scores: {
       market: 70,
+      mobility: 84,
       infrastructure: 58,
       policy: 68,
       strategic: 80,
@@ -191,6 +217,11 @@ export const areas: AreaRecord[] = [
         "Market score references redevelopment interest near the interchange.",
         "Multiple sites flagged in development pipeline summaries.",
         "Retail vacancy indicates re-use potential in area monitoring notes.",
+      ],
+      mobility: [
+        "Major transit interchange gives the district strong regional accessibility.",
+        "Active transportation links are improving, but gaps remain between parcels and station entrances.",
+        "Roadway and pathway connectivity are central to whether the district can absorb growth without added car dependence.",
       ],
       infrastructure: [
         "Infrastructure Master Plan lists upgrades without a committed schedule.",
@@ -211,16 +242,19 @@ export const areas: AreaRecord[] = [
     main_constraint: "Planned infrastructure upgrades not yet scheduled",
     why_bullets: [
       "Strategic priority area near major transit interchange",
+      "High mobility potential depends on closing station access and active transportation gaps",
       "Policy direction supports mixed-use growth",
       "Infrastructure timeline remains uncertain",
     ],
     recommended_actions: [
       "Clarify servicing schedule and funding trigger",
+      "Sequence station access, sidewalk, and cycling upgrades with early development phases",
       "Align development phasing with transit expansion",
       "Prepare a near-term district plan update",
     ],
     action_details: [
       "Publish a clear servicing trigger tied to capital plan milestones.",
+      "Identify mobility gaps between development parcels, station entrances, pathways, and nearby destinations.",
       "Sequence development approvals to match transit delivery phases.",
       "Update district plan guidance to reflect current market conditions.",
     ],
@@ -253,6 +287,7 @@ export const areas: AreaRecord[] = [
     ],
     scores: {
       market: 60,
+      mobility: 52,
       infrastructure: 55,
       policy: 62,
       strategic: 58,
@@ -262,6 +297,11 @@ export const areas: AreaRecord[] = [
         "Market interest is steady but moderate relative to central corridors.",
         "Recent mid-rise proposals are limited in the pipeline data.",
         "Market readiness improves with planned transit upgrades.",
+      ],
+      mobility: [
+        "Transit capacity improvements are planned later, limiting near-term mobility readiness.",
+        "Sidewalk and crossing conditions vary across corridor nodes.",
+        "Roadway capacity and long blocks reduce walkability for some redevelopment sites.",
       ],
       infrastructure: [
         "Transit capacity upgrades are scheduled in later TMP phases.",
@@ -283,15 +323,18 @@ export const areas: AreaRecord[] = [
     why_bullets: [
       "Moderate market interest with steady redevelopment pressure",
       "Policy direction supports mixed-use nodes",
+      "Mobility readiness is constrained by later-phase transit capacity and pedestrian gaps",
       "Transit capacity upgrades are scheduled later in the plan window",
     ],
     recommended_actions: [
       "Align node planning with scheduled transit improvements",
+      "Assess sidewalk, crossing, and bus-priority gaps at target growth nodes",
       "Target mid-rise zoning near key intersections",
       "Coordinate servicing upgrades with corridor phasing",
     ],
     action_details: [
       "Link node-level planning to transit timelines and service levels.",
+      "Create a mobility punch list for priority intersections before advancing larger approvals.",
       "Prepare zoning changes for key intersections to unlock density.",
       "Package servicing upgrades into phased capital delivery.",
     ],
@@ -324,6 +367,7 @@ export const areas: AreaRecord[] = [
     ],
     scores: {
       market: 72,
+      mobility: 66,
       infrastructure: 64,
       policy: 70,
       strategic: 60,
@@ -333,6 +377,11 @@ export const areas: AreaRecord[] = [
         "Strong east-end housing demand noted in growth monitoring.",
         "Growing interest near town centre in recent applications.",
         "Mixed-use redevelopment potential identified in area studies.",
+      ],
+      mobility: [
+        "Town centre transit access is moderate with planned improvements.",
+        "Sidewalk coverage is stronger near core blocks and weaker at edge parcels.",
+        "Roadway connectivity supports access, but active transportation links need clearer priority routes.",
       ],
       infrastructure: [
         "Servicing timing under review in Infrastructure Master Plan.",
@@ -354,15 +403,18 @@ export const areas: AreaRecord[] = [
     why_bullets: [
       "Strong residential demand in the east end",
       "Policy supports higher density near the town centre",
+      "Mobility readiness improves if transit and active transportation upgrades are sequenced with growth",
       "Servicing timing is still under review",
     ],
     recommended_actions: [
       "Confirm servicing investment schedule",
+      "Identify priority transit, sidewalk, and cycling upgrades for the town centre",
       "Coordinate town centre plan with transit priorities",
       "Identify catalytic mixed-use sites",
     ],
     action_details: [
       "Secure a published servicing schedule tied to budget approval.",
+      "Prioritize active transportation connections from edge parcels to the town centre and transit stops.",
       "Align planning approvals with transit program timelines.",
       "Advance site readiness for early catalytic projects.",
     ],
@@ -394,6 +446,7 @@ export const areas: AreaRecord[] = [
     ],
     scores: {
       market: 68,
+      mobility: 82,
       infrastructure: 73,
       policy: 76,
       strategic: 74,
@@ -403,6 +456,11 @@ export const areas: AreaRecord[] = [
         "Steady interest for transit-adjacent sites in pipeline data.",
         "Retail conversion opportunities emerging in area studies.",
         "Market activity depends on parcel assembly timing.",
+      ],
+      mobility: [
+        "Existing rapid transit service supports strong station-area mobility readiness.",
+        "Bus and rail connections reduce parking dependence for mixed-use redevelopment.",
+        "Fragmented parcels still require coordinated pedestrian routes to station entrances.",
       ],
       infrastructure: [
         "Transit service already in place per TMP station profiles.",
@@ -423,16 +481,19 @@ export const areas: AreaRecord[] = [
     main_constraint: "Fragmented parcels slow coordinated delivery",
     why_bullets: [
       "Station area supports transit-oriented development",
+      "Strong mobility readiness from existing rapid transit access",
       "Infrastructure capacity mostly available",
       "Land assembly challenges remain",
     ],
     recommended_actions: [
       "Create a station-area delivery plan",
+      "Require coordinated pedestrian access plans across fragmented parcels",
       "Support coordinated applications across parcels",
       "Clarify density targets with community partners",
     ],
     action_details: [
       "Outline phasing, responsibilities, and infrastructure sequencing.",
+      "Tie parcel assembly and site-plan review to direct, accessible routes to transit.",
       "Set up a coordinated review process for adjacent proposals.",
       "Use stakeholder workshops to align on density and form.",
     ],
@@ -464,6 +525,7 @@ export const areas: AreaRecord[] = [
     ],
     scores: {
       market: 66,
+      mobility: 57,
       infrastructure: 60,
       policy: 58,
       strategic: 62,
@@ -473,6 +535,11 @@ export const areas: AreaRecord[] = [
         "Strong suburban demand for mixed-use noted in market data.",
         "Limited recent high-density proposals in pipeline.",
         "Market response improves with policy clarity and servicing.",
+      ],
+      mobility: [
+        "Transit expansion improves medium-term readiness but is not enough for near-term high-density delivery.",
+        "Auto-oriented block structure makes walking and cycling access uneven.",
+        "Sidewalk and crossing upgrades are needed to support a town-centre development pattern.",
       ],
       infrastructure: [
         "Moderate servicing capacity available in short term.",
@@ -494,15 +561,18 @@ export const areas: AreaRecord[] = [
     why_bullets: [
       "Strong market interest in suburban mixed-use",
       "Infrastructure capacity is moderate",
+      "Mobility blockers include auto-oriented blocks and incomplete active transportation links",
       "Policy updates required to unlock higher density",
     ],
     recommended_actions: [
       "Advance secondary plan updates",
+      "Pair town-centre zoning changes with a sidewalk and crossing improvement package",
       "Align servicing strategy with town centre growth",
       "Prioritize mixed-use zoning permissions",
     ],
     action_details: [
       "Modernize the secondary plan to support higher density.",
+      "Identify the walking, cycling, and transit access upgrades required before higher-density approvals scale up.",
       "Align servicing upgrades with growth staging targets.",
       "Prioritize zoning updates to unlock mixed-use projects.",
     ],
@@ -535,6 +605,7 @@ export const areas: AreaRecord[] = [
     ],
     scores: {
       market: 82,
+      mobility: 76,
       infrastructure: 70,
       policy: 78,
       strategic: 76,
@@ -544,6 +615,11 @@ export const areas: AreaRecord[] = [
         "High demand for central mixed-use sites in pipeline data.",
         "Strong redevelopment pressure already visible.",
         "Market fundamentals exceed city average benchmarks.",
+      ],
+      mobility: [
+        "Frequent transit and walkable mainstreet conditions create high mobility readiness.",
+        "Active transportation access is strong but constrained by public realm and safety gaps.",
+        "Streetscape conditions and collision exposure affect how comfortably growth can be absorbed.",
       ],
       infrastructure: [
         "Infrastructure generally adequate per servicing notes.",
@@ -565,15 +641,18 @@ export const areas: AreaRecord[] = [
     why_bullets: [
       "High demand for central mixed-use development",
       "Policy encourages mainstreet intensification",
+      "Mobility readiness is strong but depends on public realm and safety upgrades",
       "Streetscape upgrades lag behind growth pressure",
     ],
     recommended_actions: [
       "Accelerate mainstreet public realm improvements",
+      "Flag collision exposure and active transportation gaps for transportation planning review",
       "Coordinate active transportation upgrades",
       "Expand as-of-right mid-rise permissions",
     ],
     action_details: [
       "Package streetscape improvements to support higher density.",
+      "Use safety and curbside analysis to prioritize crossings, cycling connections, and bus-stop improvements.",
       "Prioritize active transportation upgrades for safety and access.",
       "Expand permissions to reduce rezoning timelines.",
     ],

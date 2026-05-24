@@ -6,6 +6,7 @@ type ScoreBreakdownProps = {
 
 const items: Array<{ key: keyof AreaRecord["scores"]; label: string }> = [
   { key: "market", label: "Market" },
+  { key: "mobility", label: "Mobility" },
   { key: "infrastructure", label: "Infrastructure" },
   { key: "policy", label: "Policy" },
   { key: "strategic", label: "Strategic" },

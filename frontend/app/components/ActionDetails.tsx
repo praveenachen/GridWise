@@ -7,7 +7,7 @@ export default function ActionDetails({ actions, details }: ActionDetailsProps) 
   return (
     <details className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-5 shadow-sm">
       <summary className="flex cursor-pointer items-center justify-between text-sm font-semibold">
-        <span>Recommended Actions</span>
+        <span>Recommended Municipal Actions</span>
         <svg
           className="h-4 w-4 text-[var(--muted)]"
           viewBox="0 0 20 20"

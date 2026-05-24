@@ -2,25 +2,28 @@ import type { AreaRecord } from "../data/areas";
 
 export type WeightProfile = {
   market: number;
+  mobility: number;
   infrastructure: number;
   policy: number;
   strategic: number;
 };
 
 export const defaultWeights: WeightProfile = {
-  infrastructure: 0.3,
-  policy: 0.25,
-  market: 0.25,
-  strategic: 0.2,
+  mobility: 0.24,
+  infrastructure: 0.24,
+  policy: 0.22,
+  market: 0.16,
+  strategic: 0.14,
 };
 
 export function computeReadiness(
   area: AreaRecord,
   weights: WeightProfile = defaultWeights,
 ) {
-  const { market, infrastructure, policy, strategic } = area.scores;
+  const { market, mobility, infrastructure, policy, strategic } = area.scores;
   const score =
     market * weights.market +
+    mobility * weights.mobility +
     infrastructure * weights.infrastructure +
     policy * weights.policy +
     strategic * weights.strategic;
