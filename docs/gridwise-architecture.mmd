@@ -1,0 +1,16 @@
+flowchart LR
+  User["Planner / Demo User"] --> UI["Next.js Frontend"]
+  UI --> Map["Interactive Map + Area Selection"]
+  UI --> Scoring["Readiness Scoring Module"]
+  UI --> API["Next.js API Routes"]
+
+  Scoring --> Data["Sample Area Data"]
+  Scoring --> Weights["City / Developer Lens Weights"]
+
+  API --> Evidence["Evidence Retrieval Layer"]
+  Evidence --> EvidenceFiles["Planning Evidence JSONL Files"]
+
+  API --> Copilot["Planning Copilot Response"]
+  Copilot --> UI
+
+  UI --> Brief["Generated Planning Brief"]

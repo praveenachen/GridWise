@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="760" viewBox="0 0 1500 760" role="img" aria-labelledby="title desc">
+  <title id="title">City Lens and Developer Lens Comparison</title>
+  <desc id="desc">A comparison showing how the same selected area is interpreted by the City lens and Developer lens.</desc>
+  <defs>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#163331" flood-opacity="0.12"/></filter>
+    <style>
+      .bg{fill:#f5f7f5}.center{fill:#e4f2ef;stroke:#0f6b5b;stroke-width:3;filter:url(#shadow)}.city{fill:#fff;stroke:#b9d5cf;stroke-width:2;filter:url(#shadow)}.dev{fill:#fff;stroke:#d9cfae;stroke-width:2;filter:url(#shadow)}
+      .title{font-family:"Space Grotesk","Segoe UI",Arial,sans-serif;fill:#1c2a2b;font-size:40px;font-weight:800}.sub{font-family:"Source Sans 3","Segoe UI",Arial,sans-serif;fill:#6b7b7d;font-size:20px}.label{font-family:"Source Sans 3","Segoe UI",Arial,sans-serif;fill:#1c2a2b;font-size:27px;font-weight:800}.small{font-family:"Source Sans 3","Segoe UI",Arial,sans-serif;fill:#6b7b7d;font-size:20px;font-weight:600}.bullet{font-family:"Source Sans 3","Segoe UI",Arial,sans-serif;fill:#1c2a2b;font-size:22px;font-weight:650}.line{stroke:#0f6b5b;stroke-width:3;fill:none}
+    </style>
+  </defs>
+  <rect class="bg" width="1500" height="760"/>
+  <text class="title" x="70" y="78">Same Area, Two Planning Questions</text>
+  <text class="sub" x="70" y="112">GridWise separates public prioritization from private delivery feasibility</text>
+  <rect class="center" x="560" y="150" width="380" height="105" rx="24"/>
+  <text class="label" x="620" y="200">Selected Growth Area</text>
+  <text class="small" x="640" y="230">Score + evidence + constraints</text>
+  <path class="line" d="M655 255 C520 320 415 340 330 365"/>
+  <path class="line" d="M845 255 C980 320 1085 340 1170 365"/>
+  <rect class="city" x="90" y="340" width="560" height="330" rx="26"/>
+  <text class="label" x="135" y="400">City Lens</text>
+  <text class="small" x="135" y="432">What should the municipality prioritize?</text>
+  <text class="bullet" x="150" y="495">• Public investment sequencing</text>
+  <text class="bullet" x="150" y="545">• Mobility and infrastructure gaps</text>
+  <text class="bullet" x="150" y="595">• Policy alignment and zoning actions</text>
+  <text class="bullet" x="150" y="645">• Recommended municipal next step</text>
+  <rect class="dev" x="850" y="340" width="560" height="330" rx="26"/>
+  <text class="label" x="895" y="400">Developer Lens</text>
+  <text class="small" x="895" y="432">Can a project realistically move forward?</text>
+  <text class="bullet" x="910" y="495">• Delivery feasibility</text>
+  <text class="bullet" x="910" y="545">• Servicing and approvals risk</text>
+  <text class="bullet" x="910" y="595">• Project timing and assumptions</text>
+  <text class="bullet" x="910" y="645">• Mobility impact on viability</text>
+</svg>

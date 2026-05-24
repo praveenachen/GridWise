@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">GridWise Product Overview</title>
+  <desc id="desc">Introductory diagram showing GridWise as an AI-assisted growth and mobility readiness platform for municipal planning teams.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f8fbfa"/>
+      <stop offset="1" stop-color="#edf5f6"/>
+    </linearGradient>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M2 2 L10 6 L2 10 Z" fill="#0b6258"/>
+    </marker>
+    <filter id="shadow" x="-12%" y="-12%" width="124%" height="124%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#163331" flood-opacity="0.12"/>
+    </filter>
+    <filter id="smallShadow" x="-12%" y="-12%" width="124%" height="124%">
+      <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#163331" flood-opacity="0.11"/>
+    </filter>
+    <style>
+      .bg { fill: url(#bg); }
+      .title { font-family: "Space Grotesk", "Segoe UI", Arial, sans-serif; fill: #102f31; font-size: 44px; font-weight: 800; letter-spacing: 0; }
+      .subtitle { font-family: "Source Sans 3", "Segoe UI", Arial, sans-serif; fill: #557071; font-size: 21px; font-weight: 600; letter-spacing: 0; }
+      .zone-title { font-family: "Source Sans 3", "Segoe UI", Arial, sans-serif; fill: #123a3b; font-size: 18px; font-weight: 800; letter-spacing: 0; text-transform: uppercase; }
+      .card-title { font-family: "Source Sans 3", "Segoe UI", Arial, sans-serif; fill: #152f31; font-size: 22px; font-weight: 800; letter-spacing: 0; }
+      .card-title-center { font-family: "Source Sans 3", "Segoe UI", Arial, sans-serif; fill: #152f31; font-size: 22px; font-weight: 800; letter-spacing: 0; text-anchor: middle; }
+      .small { font-family: "Source Sans 3", "Segoe UI", Arial, sans-serif; fill: #526c6e; font-size: 15px; font-weight: 700; letter-spacing: 0; }
+      .footer { font-family: "Source Sans 3", "Segoe UI", Arial, sans-serif; fill: #47686b; font-size: 15px; font-weight: 650; letter-spacing: 0; }
+      .panel { fill: #ffffff; stroke: #d7e3e2; stroke-width: 1.5; filter: url(#shadow); }
+      .outcome { fill: #ffffff; stroke: #8abbb2; stroke-width: 1.8; filter: url(#smallShadow); }
+      .outcome-blue { fill: #ffffff; stroke: #a9cdda; stroke-width: 1.8; filter: url(#smallShadow); }
+      .outcome-green { fill: #ffffff; stroke: #a7c9ad; stroke-width: 1.8; filter: url(#smallShadow); }
+      .support { fill: #eef7fb; stroke: #bfd8e2; stroke-width: 1.5; filter: url(#smallShadow); }
+      .support-green { fill: #eff7f1; stroke: #bed5c4; stroke-width: 1.5; filter: url(#smallShadow); }
+      .final { fill: #fffdf8; stroke: #ccd9d6; stroke-width: 1.8; filter: url(#shadow); }
+      .line { fill: none; stroke: #0b6258; stroke-width: 2.6; marker-end: url(#arrow); stroke-linecap: round; stroke-linejoin: round; }
+      .soft-line { fill: none; stroke: #4f8ca3; stroke-width: 2.1; marker-end: url(#arrow); stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 6 7; }
+      .divider { stroke: #cbd9d8; stroke-width: 1; }
+    </style>
+  </defs>
+
+  <rect class="bg" width="1600" height="900"/>
+
+  <text class="title" x="80" y="82">GridWise Product Overview</text>
+  <text class="subtitle" x="80" y="118">AI-assisted growth and mobility readiness for municipal planning teams</text>
+
+  <rect class="panel" x="80" y="185" width="1440" height="520" rx="28"/>
+  <text class="zone-title" x="120" y="235">What GridWise Helps Planners Do</text>
+
+  <rect class="outcome-blue" x="125" y="290" width="265" height="150" rx="18"/>
+  <text class="card-title" x="155" y="352">Identify Feasible</text>
+  <text class="card-title" x="155" y="382">Growth Areas</text>
+
+  <rect class="outcome-green" x="495" y="290" width="265" height="150" rx="18"/>
+  <text class="card-title" x="525" y="337">Understand Mobility</text>
+  <text class="card-title" x="525" y="367">+ Infrastructure</text>
+  <text class="card-title" x="525" y="397">Gaps</text>
+
+  <rect class="outcome" x="865" y="290" width="265" height="150" rx="18"/>
+  <text class="card-title" x="895" y="352">Compare Planning</text>
+  <text class="card-title" x="895" y="382">Lenses</text>
+
+  <rect class="final" x="1235" y="290" width="240" height="150" rx="18"/>
+  <text class="card-title" x="1265" y="352">Recommend</text>
+  <text class="card-title" x="1265" y="382">Public Actions</text>
+
+  <path class="line" d="M390 365 H495"/>
+  <path class="line" d="M760 365 H865"/>
+  <path class="line" d="M1130 365 H1235"/>
+
+  <rect class="support" x="220" y="540" width="350" height="92" rx="18"/>
+  <text class="card-title" x="250" y="595">Ottawa Planning Evidence</text>
+
+  <rect class="support-green" x="640" y="540" width="320" height="92" rx="18"/>
+  <text class="card-title" x="670" y="595">Deterministic Readiness</text>
+
+  <rect class="support" x="1030" y="540" width="350" height="92" rx="18"/>
+  <text class="card-title" x="1060" y="595">AI-Assisted Workflow</text>
+
+  <path class="soft-line" d="M395 540 C395 500 255 500 255 440"/>
+  <path class="soft-line" d="M395 540 C430 500 590 500 628 440"/>
+  <path class="soft-line" d="M800 540 V440"/>
+  <path class="soft-line" d="M1205 540 C1205 500 1355 500 1355 440"/>
+
+  <rect class="final" x="440" y="728" width="720" height="92" rx="20"/>
+  <text class="card-title-center" x="800" y="782">Explainable municipal decision support</text>
+
+  <line class="divider" x1="80" y1="842" x2="1520" y2="842"/>
+  <text class="footer" x="80" y="872">Use this slide for the product intro: GridWise connects growth readiness, mobility constraints, evidence, and AI-assisted planning actions.</text>
+</svg>
