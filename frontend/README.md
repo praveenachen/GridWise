@@ -1,20 +1,31 @@
-# Frontend
+# GridWise Frontend
 
-This is the Next.js UI for the Growth Readiness Dashboard.
+Next.js UI for GridWise, an independent portfolio prototype for AI-assisted growth and mobility readiness planning.
 
 ## Run Locally
+
 ```powershell
 npm run dev
 ```
 
-## Optional Assistant Setup
-- Copy `.env.example` to `.env.local`
-- Set `OPENAI_API_KEY` if you want live assistant responses
-- If no key is provided, the assistant falls back to deterministic guidance
-- The assistant now reads grounded policy excerpts from `data/evidence/`
+Open:
+
+```text
+http://127.0.0.1:3000
+```
+
+## Optional Planning Copilot Setup
+
+- Copy `.env.example` to `.env.local`.
+- Set `OPENAI_API_KEY` if you want live copilot responses.
+- If no key is provided, the Planning Copilot uses deterministic fallback guidance.
+- Evidence snippets are read from the root `data/evidence/` directory.
 
 ## Notes
-- The dashboard supports City and Developer lenses.
-- City priorities are shown as a read-only dropdown rather than sliders.
-- The Developer project profile lives inside the assistant sidebar and feeds the feasibility score.
-- The assistant sidebar uses the same selected area and lens context as the main UI.
+
+- The app supports City and Developer lenses.
+- Mobility readiness is a first-class score dimension alongside market, infrastructure, policy, and strategic readiness.
+- City priorities show transparent workflow weights for public-sector prioritization.
+- The Developer project profile feeds the feasibility-oriented scoring lens.
+- The Planning Copilot uses the selected area, active lens, scores, evidence, and recommended actions.
+- This is a demo using sample data, not an official municipal planning tool.
