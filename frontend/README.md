@@ -28,4 +28,4 @@ http://127.0.0.1:3000
 - City priorities show transparent workflow weights for public-sector prioritization.
 - The Developer project profile feeds the feasibility-oriented scoring lens.
 - The Planning Copilot uses the selected area, active lens, scores, evidence, and recommended actions.
-- This is a demo using sample data, not an official municipal planning tool.
+- This uses sample planning data and is not an official municipal planning tool.

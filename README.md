@@ -4,7 +4,7 @@ GridWise is an independent portfolio prototype for AI-assisted municipal plannin
 
 The product is framed around a city-government workflow: select an area, understand why it ranks the way it does, inspect mobility and infrastructure blockers, compare City and Developer priorities, and generate a short planning brief grounded in visible evidence.
 
-GridWise uses sample/demo data and is not an official municipal planning tool.
+GridWise uses sample planning data and is not an official municipal planning tool.
 
 ## Product Framing
 
@@ -13,7 +13,7 @@ GridWise is designed for the kind of customer-facing GovTech workflow used by tr
 - Automate repetitive review of growth, mobility, infrastructure, policy, and feasibility signals.
 - Help municipal planners prioritize where public action could unlock readiness.
 - Explain recommendations with visible scores, weights, assumptions, evidence snippets, and constraints.
-- Support fast iteration during planning conversations, demos, and early-stage analysis.
+- Support fast iteration during planning conversations and early-stage analysis.
 
 Instead of acting like a generic analytics dashboard, GridWise behaves like a planning workflow assistant: it turns scattered planning factors into a concise, auditable recommendation.
 
@@ -105,13 +105,13 @@ The assistant has been repositioned as a **Planning Copilot**. It uses the selec
 
 Example prompts include:
 
-- “Generate a short planning brief for this area.”
-- “What transportation constraints affect this area?”
-- “Which infrastructure upgrades would unlock growth here?”
-- “Why is this area ranked highly?”
-- “What should the city prioritize next?”
-- “How does mobility readiness affect feasibility?”
-- “Which sequencing or policy considerations matter most?”
+- "Generate a short planning brief for this area."
+- "What transportation constraints affect this area?"
+- "Which infrastructure upgrades would unlock growth here?"
+- "Why is this area ranked highly?"
+- "What should the city prioritize next?"
+- "How does mobility readiness affect feasibility?"
+- "Which sequencing or policy considerations matter most?"
 
 The copilot works without an API key using deterministic fallback responses. If an OpenAI API key is provided, it can generate live grounded responses using the same selected-area context.
 
@@ -128,6 +128,12 @@ The generated brief includes:
 - Transportation considerations.
 - Recommended municipal actions.
 - Relevant evidence references or snippets.
+
+## Technical Architecture
+
+GridWise is organized as a layered planning workflow: the Next.js frontend captures planner interactions, an API/orchestration layer routes workflow state, deterministic scoring evaluates readiness, evidence retrieval grounds the planning context, and the Planning Copilot generates explainable briefs and responses.
+
+![GridWise Technical System Architecture](docs/gridwise-architecture.svg)
 
 ## Project Structure
 
@@ -148,7 +154,7 @@ frontend/
   Next.js app, UI components, API routes, scoring helpers, data, and copilot logic.
 ```
 
-The current MVP runs from the frontend and static/sample data. The `backend/` folder is not required for the demo.
+The current MVP runs from the frontend and static sample data. The `backend/` folder is reserved for future server-side extensions.
 
 ## Run Locally
 
@@ -204,29 +210,7 @@ npm run lint
 npm run build
 ```
 
-## Short Demo Script
-
-**1. Planning problem**
-Cities need to evaluate where growth can happen, but the analysis is repetitive: planners have to compare policy alignment, transit access, servicing constraints, safety issues, zoning, and sequencing across many areas.
-
-**2. GridWise workflow**
-GridWise turns that review into a guided workflow. Select an area, see its readiness score, inspect why it ranks high or low, and identify the public action that could unlock readiness.
-
-**3. Transportation readiness**
-Mobility is treated as a first-class planning factor. The tool shows how transit access, sidewalk gaps, active transportation, network connectivity, and safety exposure affect whether growth is actually ready.
-
-**4. City and Developer lenses**
-The City lens asks what a municipality should prioritize next. The Developer lens asks whether a project can realistically be delivered given mobility, servicing, approvals, and timing risk.
-
-**5. Planning Copilot**
-Open the Planning Copilot and ask a workflow-specific question such as “What transportation constraints affect this area?” or “Which infrastructure upgrades would unlock growth here?”
-
-**6. Generate Planning Brief**
-Click **Generate Planning Brief** to produce a concise area brief with score context, mobility considerations, constraints, recommended municipal actions, and evidence references.
-
-**7. Why it matters**
-This demonstrates how AI-assisted software can help city governments automate planning review, explain prioritization, and connect transportation decisions to real-world growth and infrastructure impact.
-
 ## Disclaimer
 
-GridWise is an independent portfolio prototype inspired by general municipal planning challenges. It uses sample/demo data and simplified scoring assumptions. It is not affiliated with, endorsed by, or presented as an official tool of any municipality, agency, institute, or planning authority. Outputs are for demonstration and planning-support exploration only, not authoritative planning decisions.
+GridWise is an independent portfolio prototype inspired by general municipal planning challenges. It uses sample planning data and simplified scoring assumptions. It is not affiliated with, endorsed by, or presented as an official tool of any municipality, agency, institute, or planning authority. Outputs are for planning-support exploration only, not authoritative planning decisions.
+

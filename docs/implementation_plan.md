@@ -29,4 +29,4 @@ Build a Growth Readiness Dashboard that shows:
 2) Build UI layout and selection flow
 3) Add map integration
 4) Wire score breakdown and explanations
-5) Polish + demo copy
+5) Polish + product copy

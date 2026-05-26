@@ -73,7 +73,7 @@
   <circle cx="128" cy="319" r="16" fill="#d8ece9" stroke="#0b6258" stroke-width="1.5"/>
   <path d="M128 336 C104 336 100 356 100 356 H156 C156 356 152 336 128 336 Z" fill="#d8ece9" stroke="#0b6258" stroke-width="1.5"/>
   <text class="component-title" x="98" y="395">Planner /</text>
-  <text class="component-title" x="98" y="416">Demo User</text>
+  <text class="component-title" x="98" y="416">User</text>
 
   <!-- Frontend -->
   <rect class="zone-blue" x="315" y="165" width="300" height="470" rx="22"/>

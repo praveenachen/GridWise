@@ -378,8 +378,8 @@ export default function Home() {
             constraints, and next municipal actions.
           </p>
           <p className="max-w-3xl text-sm text-[var(--muted)]">
-            Uses sample/demo data for portfolio purposes. GridWise is not an
-            official municipal planning tool.
+            Uses sample planning data for portfolio purposes. GridWise is not
+            an official municipal planning tool.
           </p>
         </div>
       </header>
